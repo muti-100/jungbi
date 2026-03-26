@@ -39,11 +39,11 @@ interface CalendarEvent {
 /* ------------------------------------------------------------------ */
 
 const EVENT_COLORS: Record<EventType, { bg: string; text: string; tailwind: string }> = {
-  approval: { bg: '#DC2626', text: '#ffffff', tailwind: 'bg-red-600' },
-  meeting: { bg: '#1E5799', text: '#ffffff', tailwind: 'bg-blue-700' },
-  document: { bg: '#CA8A04', text: '#ffffff', tailwind: 'bg-yellow-600' },
-  law: { bg: '#0891B2', text: '#ffffff', tailwind: 'bg-cyan-600' },
-  other: { bg: '#6B7280', text: '#ffffff', tailwind: 'bg-gray-500' },
+  approval: { bg: '#DC2626', text: '#ffffff', tailwind: 'bg-danger-600' },
+  meeting: { bg: '#1E5799', text: '#ffffff', tailwind: 'bg-primary-700' },
+  document: { bg: '#CA8A04', text: '#ffffff', tailwind: 'bg-warning-600' },
+  law: { bg: '#0891B2', text: '#ffffff', tailwind: 'bg-info-600' },
+  other: { bg: '#6B7280', text: '#ffffff', tailwind: 'bg-neutral-500' },
 };
 
 const EVENT_TYPE_LABELS: Record<EventType, string> = {
@@ -134,7 +134,7 @@ const demoEvents: CalendarEvent[] = [
 function DayBadge({ dDay }: { dDay: number }) {
   if (dDay <= 3) {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold text-red-600 bg-red-50">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold text-danger-600 bg-danger-50">
         <AlertTriangle size={10} aria-hidden="true" />
         D-{dDay}
       </span>
@@ -142,13 +142,13 @@ function DayBadge({ dDay }: { dDay: number }) {
   }
   if (dDay <= 7) {
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-amber-700 bg-amber-50">
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-warning-700 bg-warning-50">
         D-{dDay}
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs text-gray-500 bg-gray-100">
+    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs text-neutral-500 bg-neutral-100">
       D-{dDay}
     </span>
   );
@@ -167,15 +167,12 @@ function AddEventModal({ defaultDate, onClose }: AddEventModalProps) {
       aria-modal="true"
       aria-label="일정 추가"
     >
-      <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg"
-        style={{ boxShadow: 'var(--shadow-xl)' }}
-      >
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">일정 추가</h2>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
+        <div className="flex items-center justify-between p-6 border-b border-neutral-100">
+          <h2 className="text-lg font-bold text-neutral-950">일정 추가</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition-colors"
             aria-label="모달 닫기"
           >
             <X size={18} strokeWidth={1.5} />
@@ -183,24 +180,24 @@ function AddEventModal({ defaultDate, onClose }: AddEventModalProps) {
         </div>
         <div className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="event-title">
-              일정명 <span className="text-red-500" aria-label="필수">*</span>
+            <label className="block text-sm font-medium text-neutral-700 mb-1" htmlFor="event-title">
+              일정명 <span className="text-danger-500" aria-label="필수">*</span>
             </label>
             <input
               id="event-title"
               type="text"
               required
               placeholder="일정 제목 입력"
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="event-type">
+            <label className="block text-sm font-medium text-neutral-700 mb-1" htmlFor="event-type">
               일정 유형
             </label>
             <select
               id="event-type"
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               {Object.entries(EVENT_TYPE_LABELS).map(([key, label]) => (
                 <option key={key} value={key}>
@@ -210,48 +207,48 @@ function AddEventModal({ defaultDate, onClose }: AddEventModalProps) {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="event-date">
-              날짜 <span className="text-red-500" aria-label="필수">*</span>
+            <label className="block text-sm font-medium text-neutral-700 mb-1" htmlFor="event-date">
+              날짜 <span className="text-danger-500" aria-label="필수">*</span>
             </label>
             <input
               id="event-date"
               type="date"
               defaultValue={defaultDate}
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="event-location">
+            <label className="block text-sm font-medium text-neutral-700 mb-1" htmlFor="event-location">
               장소
             </label>
             <input
               id="event-location"
               type="text"
               placeholder="장소 입력 (선택)"
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="event-memo">
+            <label className="block text-sm font-medium text-neutral-700 mb-1" htmlFor="event-memo">
               메모
             </label>
             <textarea
               id="event-memo"
               rows={3}
               placeholder="메모 입력 (선택)"
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
             />
           </div>
         </div>
         <div className="flex gap-2 px-6 pb-6">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex-1 px-4 py-2 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
           >
             취소
           </button>
           <button
-            className="flex-1 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+            className="flex-1 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors"
           >
             추가
           </button>
@@ -308,20 +305,20 @@ export default function CalendarPage() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border-b border-neutral-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">일정 관리</h1>
+          <h1 className="text-xl font-bold text-neutral-950 tracking-tight">일정 관리</h1>
           <div className="flex items-center gap-1">
             <button
               onClick={() => navigateCalendar('prev')}
-              className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+              className="p-1.5 rounded-lg text-neutral-500 hover:bg-neutral-100 transition-colors"
               aria-label="이전 달"
             >
               <ChevronLeft size={18} strokeWidth={1.5} />
             </button>
             <button
               onClick={() => navigateCalendar('next')}
-              className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+              className="p-1.5 rounded-lg text-neutral-500 hover:bg-neutral-100 transition-colors"
               aria-label="다음 달"
             >
               <ChevronRight size={18} strokeWidth={1.5} />
@@ -333,7 +330,7 @@ export default function CalendarPage() {
           <div className="hidden lg:flex items-center gap-3">
             {(Object.entries(EVENT_COLORS) as [EventType, typeof EVENT_COLORS[EventType]][]).map(
               ([type, color]) => (
-                <div key={type} className="flex items-center gap-1.5 text-xs text-gray-600">
+                <div key={type} className="flex items-center gap-1.5 text-xs text-neutral-600">
                   <span className={`w-3 h-3 rounded-sm ${color.tailwind}`} aria-hidden="true" />
                   {EVENT_TYPE_LABELS[type]}
                 </div>
@@ -345,7 +342,7 @@ export default function CalendarPage() {
               setModalDate(undefined);
               setShowModal(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors"
             aria-label="일정 추가"
           >
             <Plus size={16} strokeWidth={1.5} />
@@ -358,7 +355,7 @@ export default function CalendarPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* Calendar */}
         <div className="flex-1 overflow-hidden p-4">
-          <div className="bg-white rounded-xl h-full overflow-hidden" style={{ boxShadow: 'var(--shadow-sm)' }}>
+          <div className="bg-white rounded-xl h-full overflow-hidden shadow-sm border border-neutral-200">
             <FullCalendar
               ref={calendarRef}
               plugins={[dayGridPlugin, interactionPlugin]}
@@ -393,13 +390,13 @@ export default function CalendarPage() {
 
         {/* Right Sidebar */}
         <aside
-          className="w-72 shrink-0 border-l border-gray-200 bg-white flex flex-col overflow-hidden"
+          className="w-72 shrink-0 border-l border-neutral-200 bg-white flex flex-col overflow-hidden"
           aria-label="선택한 날짜의 일정 목록"
         >
-          <div className="p-4 border-b border-gray-100">
+          <div className="p-4 border-b border-neutral-100">
             <div className="flex items-center gap-2">
-              <Calendar size={16} className="text-gray-400" strokeWidth={1.5} />
-              <span className="text-sm font-semibold text-gray-800">
+              <Calendar size={16} className="text-neutral-400" strokeWidth={1.5} />
+              <span className="text-sm font-semibold text-neutral-800">
                 {selectedDate
                   ? new Date(selectedDate).toLocaleDateString('ko-KR', {
                       month: 'long',
@@ -413,8 +410,8 @@ export default function CalendarPage() {
 
           <div className="flex-1 overflow-y-auto p-4">
             {!selectedDate && (
-              <div className="text-center py-10 text-sm text-gray-400">
-                <Calendar size={32} className="mx-auto mb-2 text-gray-200" strokeWidth={1} />
+              <div className="text-center py-10 text-sm text-neutral-400">
+                <Calendar size={32} className="mx-auto mb-2 text-neutral-200" strokeWidth={1} />
                 캘린더에서 날짜를 클릭하면
                 <br />
                 해당 일정이 표시됩니다
@@ -422,15 +419,15 @@ export default function CalendarPage() {
             )}
 
             {selectedDate && selectedDateEvents.length === 0 && (
-              <div className="text-center py-10 text-sm text-gray-400">
-                <Calendar size={32} className="mx-auto mb-2 text-gray-200" strokeWidth={1} />
+              <div className="text-center py-10 text-sm text-neutral-400">
+                <Calendar size={32} className="mx-auto mb-2 text-neutral-200" strokeWidth={1} />
                 <p>이 날 일정이 없습니다</p>
                 <button
                   onClick={() => {
                     setModalDate(selectedDate);
                     setShowModal(true);
                   }}
-                  className="mt-3 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition-colors"
+                  className="mt-3 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary-50 text-primary-600 text-sm font-medium hover:bg-primary-100 transition-colors"
                 >
                   <Plus size={14} />
                   일정 추가
@@ -449,8 +446,8 @@ export default function CalendarPage() {
                       onClick={() => setSelectedEvent(isSelected ? null : ev)}
                       className={`w-full text-left p-3 rounded-xl border transition-all ${
                         isSelected
-                          ? 'border-blue-200 bg-blue-50'
-                          : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
+                          ? 'border-primary-200 bg-primary-50'
+                          : 'border-neutral-100 hover:border-neutral-200 hover:bg-neutral-50'
                       }`}
                       aria-expanded={isSelected}
                       aria-label={ev.title}
@@ -463,7 +460,7 @@ export default function CalendarPage() {
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-1">
-                            <span className="text-sm font-medium text-gray-800 leading-snug">
+                            <span className="text-sm font-medium text-neutral-800 leading-snug">
                               {ev.title}
                             </span>
                             {ev.dDay !== undefined && <DayBadge dDay={ev.dDay} />}
@@ -489,7 +486,7 @@ export default function CalendarPage() {
                       </div>
 
                       {isSelected && (
-                        <div className="mt-2 pl-4 space-y-1 text-xs text-gray-500">
+                        <div className="mt-2 pl-4 space-y-1 text-xs text-neutral-500">
                           {ev.location && (
                             <div className="flex items-center gap-1">
                               <MapPin size={11} strokeWidth={1.5} />
