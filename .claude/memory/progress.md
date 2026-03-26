@@ -3,10 +3,13 @@
 _Agents: Update this after completing each task._
 
 ## Current Project
-Waruru — Real-time offline social matching app (Korean market)
+Jungbi (정비나라) — 도시정비사업 법령/절차 관리 SaaS 웹플랫폼
 
 ## Phase
-/ship — deployment artifacts written. Project is ready for production deploy.
+/plan — plan.md 작성 완료. 다음 단계: /build
+
+## Previous Project
+Waruru — Real-time offline social matching app (Korean market) — /ship 완료 (2026-03-26)
 
 ## Completed (deployment — 2026-03-26)
 - [2026-03-26] @devops: All deployment artifacts written
@@ -76,12 +79,12 @@ Waruru — Real-time offline social matching app (Korean market)
   - API: /api/admin/stats with session guard
   - Error handling: error.tsx, not-found.tsx, loading.tsx
 
-## What's Next (by priority)
-1. W1-2: Venue DB seed data — 5 Seoul districts (마포/성동/강남/용산/송파)
-2. W1-2: Supabase Edge Function generate-figurine (calls AI sidecar)
-3. W1-2: Big Five A/B offline validation with 100 pairs
-4. W3-4: OSRM self-hosted deploy (t3.small Seoul road network)
-5. W5-6: GTM execution — influencer collabs, community seeding, popup event
+## Jungbi — What's Next (by priority)
+1. S1 (W1~W2): Supabase 스키마 마이그레이션 v1 + Next.js 프로젝트 셋업
+2. S1 (W1~W2): 절차 플로우차트 UI (재개발·재건축) — React Flow
+3. S1 (W1~W2): 법제처 OpenAPI 키 발급 (open.law.go.kr)
+4. S2 (W3~W4): 법령/조례 통합 정리 뷰 + 소규모·모아주택 플로우차트
+5. S3 (W5~W6): 일정 관리 + 법령 알림 + 토스페이먼츠 결제
 
-## North Star
-MAU 58,000 in 6 months post-launch
+## Jungbi — North Star
+Pro 구독 조합 수 120개 in 12개월 → MRR 7,080,000원
