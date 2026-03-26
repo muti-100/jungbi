@@ -1,0 +1,607 @@
+openapi: 3.0.3
+info:
+  title: Waruru API
+  description: |
+    Real-time offline social matching platform backend API.
+    All endpoints are versioned under /v1/.
+    Authentication uses JWT Bearer tokens issued by POST /v1/auth/verify-phone.
+  version: "1.0.0"
+  contact:
+    name: Waruru Engineering
+
+servers:
+  - url: http://localhost:3000
+    description: Local development
+  - url: https://api.waruru.kr
+    description: Production
+
+components:
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, request_id]
+          properties:
+            code:
+              type: string
+              example: UNAUTHORIZED
+            message:
+              type: string
+              example: Invalid or expired token
+            request_id:
+              type: string
+              format: uuid
+              example: 550e8400-e29b-41d4-a716-446655440000
+
+    SendOtpRequest:
+      type: object
+      required: [phone]
+      properties:
+        phone:
+          type: string
+          pattern: '^\+82[0-9]{9,10}$'
+          example: "+821012345678"
+
+    VerifyOtpRequest:
+      type: object
+      required: [phone, token]
+      properties:
+        phone:
+          type: string
+          pattern: '^\+82[0-9]{9,10}$'
+          example: "+821012345678"
+        token:
+          type: string
+          pattern: '^[0-9]{6}$'
+          example: "123456"
+
+    AuthTokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          enum: [Bearer]
+        expires_in:
+          type: integer
+          example: 604800
+        user_id:
+          type: string
+          format: uuid
+        kyc_verified:
+          type: boolean
+
+    EnterQueueRequest:
+      type: object
+      required: [location, big_five_snapshot]
+      properties:
+        location:
+          type: object
+          required: [lat, lng]
+          properties:
+            lat:
+              type: number
+              minimum: -90
+              maximum: 90
+              example: 37.5665
+            lng:
+              type: number
+              minimum: -180
+              maximum: 180
+              example: 126.9780
+        big_five_snapshot:
+          type: array
+          items:
+            type: number
+            minimum: 0.0
+            maximum: 1.0
+          minItems: 5
+          maxItems: 5
+          example: [0.72, 0.65, 0.80, 0.55, 0.40]
+        max_wait_seconds:
+          type: integer
+          minimum: 30
+          maximum: 600
+          default: 300
+
+    MatchResponse:
+      type: object
+      properties:
+        match_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, venue_assigned, arrived, completed, cancelled]
+        user_a_id:
+          type: string
+          format: uuid
+        user_b_id:
+          type: string
+          format: uuid
+        venue:
+          nullable: true
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+            category:
+              type: string
+            eta_a_seconds:
+              type: integer
+            eta_b_seconds:
+              type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    MidpointRequest:
+      type: object
+      required: [user_a_location, user_b_location]
+      properties:
+        user_a_location:
+          $ref: '#/components/schemas/Coordinate'
+        user_b_location:
+          $ref: '#/components/schemas/Coordinate'
+
+    Coordinate:
+      type: object
+      required: [lat, lng]
+      properties:
+        lat:
+          type: number
+          example: 37.5505
+        lng:
+          type: number
+          example: 126.9213
+
+    MidpointResponse:
+      type: object
+      properties:
+        midpoint:
+          $ref: '#/components/schemas/Coordinate'
+        venues:
+          type: array
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/VenueResult'
+
+    VenueResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        category:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        district:
+          type: string
+          enum: [마포, 성동, 강남, 용산, 송파]
+        eta_a_seconds:
+          type: integer
+        eta_b_seconds:
+          type: integer
+        score:
+          type: number
+          description: "Venue score: -(|t_a - t_b| + 0.3 * max(t_a, t_b)). Higher is better."
+
+    BleEventRequest:
+      type: object
+      required: [match_id, beacon_id, rssi, user_id]
+      properties:
+        match_id:
+          type: string
+          format: uuid
+        beacon_id:
+          type: string
+          example: "beacon-001"
+        rssi:
+          type: integer
+          minimum: -120
+          maximum: 0
+          example: -70
+        user_id:
+          type: string
+          format: uuid
+        method:
+          type: string
+          enum: [ble, gps_fallback, manual]
+          default: ble
+        gps_lat:
+          type: number
+          nullable: true
+        gps_lng:
+          type: number
+          nullable: true
+
+    ArrivalStatusResponse:
+      type: object
+      properties:
+        match_id:
+          type: string
+          format: uuid
+        user_a_arrived:
+          type: boolean
+        user_b_arrived:
+          type: boolean
+        both_confirmed:
+          type: boolean
+        match_status:
+          type: string
+
+    CreateRollingPaperRequest:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          maxLength: 200
+          example: "오늘 만남 정말 즐거웠어요!"
+
+    RollingPaperResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        match_id:
+          type: string
+          format: uuid
+        author_id:
+          type: string
+          format: uuid
+        message:
+          type: string
+        figurine_url:
+          type: string
+          nullable: true
+        figurine_status:
+          type: string
+          enum: [pending, ready, failed]
+        created_at:
+          type: string
+          format: date-time
+
+    AbTestAssignment:
+      type: object
+      properties:
+        variant:
+          type: string
+          enum: [control, v2_weighted]
+        feature_flags:
+          type: object
+          additionalProperties: true
+          example:
+            rolling_paper_v2: true
+            ble_rssi_threshold: -75
+
+security:
+  - JWT: []
+
+paths:
+
+  # ── Auth ────────────────────────────────────────────────────────────────────
+
+  /v1/auth/verify-phone/send:
+    post:
+      tags: [Auth]
+      summary: Send OTP
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendOtpRequest'
+      responses:
+        "204":
+          description: OTP dispatched
+        "400":
+          description: Invalid phone or send failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/auth/verify-phone:
+    post:
+      tags: [Auth]
+      summary: Verify OTP and issue JWT
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtpRequest'
+      responses:
+        "200":
+          description: JWT issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        "401":
+          description: Invalid or expired OTP
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ── Matching ────────────────────────────────────────────────────────────────
+
+  /v1/matching/queue:
+    post:
+      tags: [Matching]
+      summary: Enter matching queue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnterQueueRequest'
+      responses:
+        "200":
+          description: Queued or matched immediately
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  queued:
+                    type: boolean
+                  match_id:
+                    type: string
+                    format: uuid
+                    nullable: true
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "409":
+          description: Already in queue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [Matching]
+      summary: Leave matching queue
+      responses:
+        "204":
+          description: Removed from queue
+        "404":
+          description: User not in queue
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/matching/{match_id}:
+    get:
+      tags: [Matching]
+      summary: Get match status and venue
+      parameters:
+        - in: path
+          name: match_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Match details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchResponse'
+        "404":
+          description: Match not found
+
+  # ── Venue ───────────────────────────────────────────────────────────────────
+
+  /v1/venue/midpoint:
+    post:
+      tags: [Venue]
+      summary: Find top-3 midpoint venues
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MidpointRequest'
+      responses:
+        "200":
+          description: Top 3 venues with ETA
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MidpointResponse'
+        "502":
+          description: OSRM unavailable
+
+  # ── Arrival ─────────────────────────────────────────────────────────────────
+
+  /v1/arrival/ble-event:
+    post:
+      tags: [Arrival]
+      summary: Submit BLE or GPS arrival event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BleEventRequest'
+      responses:
+        "200":
+          description: Confirmation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  confirmed:
+                    type: boolean
+                  both_arrived:
+                    type: boolean
+        "400":
+          description: RSSI below threshold or GPS distance exceeded
+        "404":
+          description: Match not found
+
+  /v1/arrival/{match_id}/status:
+    get:
+      tags: [Arrival]
+      summary: Get arrival status for a match
+      parameters:
+        - in: path
+          name: match_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Arrival status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrivalStatusResponse'
+
+  # ── Rolling Paper ────────────────────────────────────────────────────────────
+
+  /v1/rolling-paper/{match_id}:
+    post:
+      tags: [Rolling Paper]
+      summary: Create rolling paper
+      parameters:
+        - in: path
+          name: match_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRollingPaperRequest'
+      responses:
+        "201":
+          description: Rolling paper created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RollingPaperResponse'
+        "400":
+          description: Match not in arrived status
+        "409":
+          description: Rolling paper already exists
+    get:
+      tags: [Rolling Paper]
+      summary: Get rolling paper with figurine URL
+      parameters:
+        - in: path
+          name: match_id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Rolling paper
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RollingPaperResponse'
+        "404":
+          description: Not found
+
+  /v1/figurine/generate:
+    post:
+      tags: [Rolling Paper]
+      summary: Trigger AI figurine generation job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [match_id]
+              properties:
+                match_id:
+                  type: string
+                  format: uuid
+                style:
+                  type: string
+                  example: chibi
+      responses:
+        "202":
+          description: Job accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+                    format: uuid
+
+  # ── A/B Test ─────────────────────────────────────────────────────────────────
+
+  /v1/abtest/assignment:
+    get:
+      tags: [A/B Test]
+      summary: Get A/B test variant assignment
+      responses:
+        "200":
+          description: Assignment and feature flags
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbTestAssignment'
+
+  # ── Legacy ───────────────────────────────────────────────────────────────────
+
+  /v1/legacy/migrate:
+    post:
+      tags: [Legacy]
+      summary: Proxy migration request to legacy service
+      description: Protected by circuit breaker — returns 503 when circuit is open.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: Forwarded response from legacy service
+        "503":
+          description: Circuit breaker open
+
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid JWT
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

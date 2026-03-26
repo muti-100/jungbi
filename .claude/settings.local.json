@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(winget install:*)",
+      "Bash(curl -fsSL https://rtk-ai.app/install.sh)",
+      "Bash(sh)",
+      "WebSearch",
+      "WebFetch(domain:www.statista.com)",
+      "WebFetch(domain:www.businessofapps.com)",
+      "WebFetch(domain:timeleft.world)",
+      "WebFetch(domain:www.theguardian.com)",
+      "WebFetch(domain:kr.appfollow.io)",
+      "WebFetch(domain:appfollow.io)",
+      "WebFetch(domain:www.koreaherald.com)",
+      "WebFetch(domain:www.appannie.com)",
+      "WebFetch(domain:biz.heraldcorp.com)",
+      "WebFetch(domain:www.koreajoongangdaily.joins.com)",
+      "WebFetch(domain:sensortower.com)",
+      "WebFetch(domain:www.kedglobal.com)",
+      "WebFetch(domain:techcrunch.com)",
+      "WebFetch(domain:www.pewresearch.org)",
+      "WebFetch(domain:www.adjust.com)",
+      "WebFetch(domain:apps.apple.com)",
+      "WebFetch(domain:www.wired.com)",
+      "WebFetch(domain:namu.wiki)",
+      "WebFetch(domain:www.mordorintelligence.com)",
+      "WebFetch(domain:www.businessresearchinsights.com)",
+      "WebFetch(domain:finance.yahoo.com)",
+      "WebFetch(domain:www.grandviewresearch.com)",
+      "WebFetch(domain:koreajoongangdaily.joins.com)",
+      "WebFetch(domain:www.marketwatch.com)",
+      "WebFetch(domain:www.reddit.com)",
+      "WebFetch(domain:www.theatlantic.com)",
+      "WebFetch(domain:en.yna.co.kr)",
+      "WebFetch(domain:www.bloomberg.com)",
+      "WebFetch(domain:www.koreatimes.co.kr)",
+      "WebFetch(domain:www.scmp.com)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "token-optimizer",
+    "github",
+    "firecrawl",
+    "supabase"
+  ],
+  "enableAllProjectMcpServers": true
+}
