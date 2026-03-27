@@ -361,14 +361,14 @@ export default function ProposalsPage() {
         </h2>
 
         <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] border-collapse text-sm" role="table">
+          <div className="overflow-x-auto -mx-0">
+            <table className="w-full min-w-[700px] border-collapse text-sm" role="table">
               <thead>
                 <tr className="border-b border-neutral-200">
-                  {/* Empty corner cell */}
+                  {/* Empty corner cell — sticky */}
                   <th
                     scope="col"
-                    className="sticky left-0 z-10 bg-neutral-50 px-4 py-4 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wide w-36 border-r border-neutral-200"
+                    className="sticky left-0 z-20 bg-neutral-50 px-4 py-4 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wide min-w-[140px] border-r border-neutral-200"
                   >
                     항목
                   </th>
@@ -377,7 +377,7 @@ export default function ProposalsPage() {
                     <th
                       key={p.id}
                       scope="col"
-                      className="px-4 py-4 text-center min-w-[180px]"
+                      className="px-4 py-4 text-center min-w-[160px]"
                     >
                       <div className="flex flex-col items-center gap-1">
                         <span className="text-xl">{MEDALS[p.rank - 1]}</span>
@@ -392,19 +392,18 @@ export default function ProposalsPage() {
               <tbody>
                 {ROW_DEFS.map((row, rowIdx) => {
                   const best = bestValues[row.label]
+                  const rowBg = rowIdx % 2 === 1 ? '#F9FAFB' : '#FFFFFF'
                   return (
                     <tr
                       key={row.label}
-                      className={cn(
-                        'border-b border-neutral-100 last:border-0',
-                        rowIdx % 2 === 1 ? 'bg-neutral-50/50' : 'bg-white'
-                      )}
+                      className="border-b border-neutral-100 last:border-0"
+                      style={{ backgroundColor: rowBg }}
                     >
-                      {/* Row header */}
+                      {/* Row header — sticky with explicit bg */}
                       <th
                         scope="row"
-                        className="sticky left-0 z-10 px-4 py-3.5 text-left text-xs font-semibold text-neutral-600 border-r border-neutral-200"
-                        style={{ background: rowIdx % 2 === 1 ? 'rgb(249 250 251 / 0.5)' : 'white' }}
+                        className="sticky left-0 z-10 px-4 py-3.5 text-left text-xs font-semibold text-neutral-600 border-r border-neutral-200 min-w-[140px]"
+                        style={{ backgroundColor: rowBg }}
                       >
                         {row.label}
                       </th>
@@ -416,7 +415,7 @@ export default function ProposalsPage() {
                           <td
                             key={p.id}
                             className={cn(
-                              'px-4 py-3.5 text-center text-sm',
+                              'px-4 py-3.5 text-center text-sm min-w-[160px]',
                               isBest ? 'bg-success-50' : ''
                             )}
                           >

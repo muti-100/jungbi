@@ -10,8 +10,6 @@ import {
   ClipboardCheck,
   Building2,
   Calculator,
-  ChevronDown,
-  ChevronUp,
   FileSpreadsheet,
   Clock,
   CheckCircle2,
@@ -19,6 +17,7 @@ import {
   Shield,
   Lock,
   AlertTriangle,
+  ArrowUpDown,
   type LucideIcon,
 } from 'lucide-react'
 import { Badge, type BadgeVariant } from '@/components/ui/Badge'
@@ -184,77 +183,204 @@ function useToast() {
 }
 
 /* ------------------------------------------------------------------ */
-/* BookletCard                                                         */
+/* BookletTable (replaces BookletCard grid)                            */
 /* ------------------------------------------------------------------ */
 
-function BookletCard({ booklet, onAction }: { booklet: Booklet; onAction: (action: string) => void }) {
+function BookletTable({
+  booklets,
+  onAction,
+}: {
+  booklets: Booklet[]
+  onAction: (action: string) => void
+}) {
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [sortDesc, setSortDesc] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filtered = booklets
+    .filter((b) => {
+      const q = searchQuery.toLowerCase()
+      return (
+        b.unionName.toLowerCase().includes(q) ||
+        b.meetingType.includes(q) ||
+        b.items.some((item) => item.toLowerCase().includes(q))
+      )
+    })
+    .sort((a, b) =>
+      sortDesc
+        ? b.meetingDate.localeCompare(a.meetingDate)
+        : a.meetingDate.localeCompare(b.meetingDate)
+    )
+
   return (
-    <article className="bg-white rounded-xl border border-neutral-200 p-5 flex flex-col gap-3 hover:shadow-md transition-shadow">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <p className="font-semibold text-neutral-900 text-sm leading-snug">{booklet.unionName}</p>
-        <Badge variant={booklet.meetingType === '정기총회' ? 'primary' : 'warning'} className="shrink-0">
-          {booklet.meetingType}
-        </Badge>
+    <div>
+      {/* Search + sort controls */}
+      <div className="flex items-center gap-3 mb-4">
+        <input
+          type="search"
+          placeholder="조합명, 안건으로 검색..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="flex-1 max-w-xs px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          aria-label="총회책자 검색"
+        />
       </div>
 
-      {/* Meta */}
-      <div className="flex items-center gap-3 text-xs text-neutral-400">
-        <span>{booklet.meetingDate}</span>
-        <span aria-hidden>·</span>
-        <span>{booklet.pages}페이지</span>
-      </div>
+      <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-sm" aria-label="총회책자 목록">
+            <thead>
+              <tr className="border-b border-neutral-100 bg-neutral-50">
+                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 min-w-[180px]">
+                  조합명
+                </th>
+                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500">
+                  주요 안건
+                </th>
+                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 w-24">
+                  유형
+                </th>
+                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 w-28">
+                  <button
+                    onClick={() => setSortDesc((v) => !v)}
+                    className="inline-flex items-center gap-1 hover:text-neutral-700 transition-colors"
+                    aria-label="날짜 정렬"
+                  >
+                    일시
+                    <ArrowUpDown size={12} aria-hidden />
+                  </button>
+                </th>
+                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 w-20">
+                  페이지
+                </th>
+                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 w-28">
+                  다운로드
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-100">
+              {filtered.map((booklet) => {
+                const isExpanded = expandedId === booklet.id
+                return (
+                  <>
+                    <tr
+                      key={booklet.id}
+                      className="hover:bg-neutral-50 transition-colors cursor-pointer"
+                      onClick={() => setExpandedId(isExpanded ? null : booklet.id)}
+                      aria-expanded={isExpanded}
+                    >
+                      <td className="px-4 py-3">
+                        <span className="font-medium text-neutral-800">{booklet.unionName}</span>
+                      </td>
+                      <td className="px-4 py-3 text-neutral-600 max-w-xs">
+                        <span className="line-clamp-1">{booklet.items.join(', ')}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge variant={booklet.meetingType === '정기총회' ? 'primary' : 'warning'}>
+                          {booklet.meetingType}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-neutral-500 text-xs">
+                        {booklet.meetingDate.slice(5).replace('-', '/')}
+                      </td>
+                      <td className="px-4 py-3 text-neutral-500 text-xs">{booklet.pages}p</td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onAction('다운로드가 시작됩니다')
+                          }}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary-50 text-primary-700 text-xs font-medium hover:bg-primary-100 transition-colors"
+                          aria-label={`${booklet.unionName} 다운로드`}
+                        >
+                          <Download size={12} aria-hidden />
+                          {booklet.fileSize}
+                        </button>
+                      </td>
+                    </tr>
+                    {isExpanded && (
+                      <tr key={`${booklet.id}-detail`} className="bg-primary-50/40">
+                        <td colSpan={6} className="px-6 py-4">
+                          <div className="flex flex-col sm:flex-row gap-4">
+                            {/* Agenda */}
+                            <div className="flex-1">
+                              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">
+                                안건 목록
+                              </p>
+                              <ul className="space-y-1" aria-label="안건 목록">
+                                {booklet.items.map((item, idx) => (
+                                  <li key={item} className="flex items-center gap-2 text-sm text-neutral-700">
+                                    <span className="text-xs text-neutral-400 w-5 shrink-0">
+                                      제{idx + 1}호
+                                    </span>
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
 
-      {/* Agenda items */}
-      <ul className="space-y-1" aria-label="안건 목록">
-        {booklet.items.map((item) => (
-          <li key={item} className="flex items-center gap-1.5 text-xs text-neutral-600">
-            <span className="w-1 h-1 rounded-full bg-neutral-300 shrink-0" aria-hidden />
-            {item}
-          </li>
-        ))}
-      </ul>
+                            {/* File info */}
+                            <div className="sm:w-48 shrink-0">
+                              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">
+                                파일 정보
+                              </p>
+                              <div className="space-y-1 text-xs text-neutral-600">
+                                <p>용량: {booklet.fileSize}</p>
+                                <p>페이지: {booklet.pages}페이지</p>
+                                <p>다운로드: {booklet.downloadCount.toLocaleString()}회</p>
+                              </div>
+                            </div>
 
-      {/* Download info */}
-      <div className="flex items-center gap-3 text-xs text-neutral-400 pt-1 border-t border-neutral-100">
-        <span>다운로드 {booklet.downloadCount.toLocaleString()}회</span>
-        <span aria-hidden>·</span>
-        <span>{booklet.fileSize}</span>
+                            {/* Actions */}
+                            <div className="sm:w-32 shrink-0 flex flex-col gap-2">
+                              <button
+                                onClick={() => onAction('미리보기')}
+                                className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-neutral-200 text-xs font-medium text-neutral-600 hover:bg-white transition-colors"
+                                aria-label={`${booklet.unionName} 미리보기`}
+                              >
+                                <Eye size={13} aria-hidden />
+                                미리보기
+                              </button>
+                              <button
+                                onClick={() => onAction('다운로드가 시작됩니다')}
+                                className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-primary-600 text-white text-xs font-medium hover:bg-primary-700 transition-colors"
+                                aria-label={`${booklet.unionName} 다운로드`}
+                              >
+                                <Download size={13} aria-hidden />
+                                다운로드
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )
+              })}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-4 py-10 text-center text-sm text-neutral-400">
+                    검색 결과가 없습니다
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-
-      {/* Actions */}
-      <div className="flex gap-2 pt-1">
-        <button
-          onClick={() => onAction('미리보기')}
-          className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-neutral-200 text-xs font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
-          aria-label={`${booklet.unionName} 미리보기`}
-        >
-          <Eye size={13} aria-hidden />
-          미리보기
-        </button>
-        <button
-          onClick={() => onAction('다운로드')}
-          className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-primary-600 text-white text-xs font-medium hover:bg-primary-700 transition-colors"
-          aria-label={`${booklet.unionName} 다운로드`}
-        >
-          <Download size={13} aria-hidden />
-          다운로드
-        </button>
-      </div>
-    </article>
+    </div>
   )
 }
 
 /* ------------------------------------------------------------------ */
-/* TemplateCard                                                        */
+/* TemplateCard (compact 2-col, always-visible columns as tags)        */
 /* ------------------------------------------------------------------ */
 
 function TemplateCard({ template, onAction }: { template: Template; onAction: (action: string) => void }) {
-  const [columnsOpen, setColumnsOpen] = useState(false)
   const IconComponent = template.icon
 
   return (
-    <article className="bg-white rounded-xl border border-neutral-200 p-5 flex flex-col gap-3 hover:shadow-md transition-shadow">
+    <article className="bg-white rounded-xl border border-neutral-200 p-4 flex flex-col gap-3 hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex items-start gap-3">
         <div
@@ -272,42 +398,25 @@ function TemplateCard({ template, onAction }: { template: Template; onAction: (a
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-neutral-900 text-sm">{template.name}</p>
-          <Badge variant="neutral" className="mt-1 text-[10px]">
-            {template.format}
-          </Badge>
+          <p className="text-xs text-neutral-500 mt-0.5 leading-snug">{template.description}</p>
         </div>
       </div>
 
-      {/* Description */}
-      <p className="text-xs text-neutral-500 leading-relaxed">{template.description}</p>
-
-      {/* Expandable columns */}
-      <div>
-        <button
-          onClick={() => setColumnsOpen((v) => !v)}
-          aria-expanded={columnsOpen}
-          className="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-700 transition-colors font-medium"
-        >
-          포함 컬럼
-          {columnsOpen ? <ChevronUp size={12} aria-hidden /> : <ChevronDown size={12} aria-hidden />}
-        </button>
-        {columnsOpen && (
-          <div className="mt-2 flex flex-wrap gap-1" role="list" aria-label="포함 컬럼 목록">
-            {template.columns.map((col) => (
-              <span
-                key={col}
-                role="listitem"
-                className="px-1.5 py-0.5 bg-neutral-100 text-neutral-600 rounded text-[10px] font-medium"
-              >
-                {col}
-              </span>
-            ))}
-          </div>
-        )}
+      {/* Columns — always visible as small tags */}
+      <div className="flex flex-wrap gap-1" role="list" aria-label="포함 컬럼 목록">
+        {template.columns.map((col) => (
+          <span
+            key={col}
+            role="listitem"
+            className="px-1.5 py-0.5 bg-neutral-100 text-neutral-600 rounded text-[10px] font-medium"
+          >
+            {col}
+          </span>
+        ))}
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2 pt-1 mt-auto">
+      <div className="flex gap-2 mt-auto">
         <button
           onClick={() => onAction('양식 다운로드가 시작됩니다')}
           className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-primary-600 text-white text-xs font-medium hover:bg-primary-700 transition-colors"
@@ -322,7 +431,7 @@ function TemplateCard({ template, onAction }: { template: Template; onAction: (a
           aria-label={`${template.name} 샘플 보기`}
         >
           <Eye size={13} aria-hidden />
-          샘플 보기
+          샘플
         </button>
       </div>
     </article>
@@ -448,27 +557,30 @@ export default function MeetingsPage() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {demoBooklets.map((booklet) => (
-            <BookletCard key={booklet.id} booklet={booklet} onAction={showToast} />
-          ))}
-        </div>
+        <BookletTable booklets={demoBooklets} onAction={showToast} />
       </section>
 
       {/* ============================================================ */}
-      {/* Section 2: 표준 양식 다운로드                               */}
+      {/* Section 2: 서울시 표준 양식                                 */}
       {/* ============================================================ */}
       <section aria-labelledby="templates-heading">
-        <div className="mb-4">
-          <h2 id="templates-heading" className="text-lg font-bold text-neutral-900">
-            표준 양식
-          </h2>
-          <p className="text-sm text-neutral-500 mt-0.5">
-            정비나라 표준 양식을 활용하면 조합별로 다른 명부도 통일된 형식으로 관리할 수 있습니다.
-          </p>
+        {/* Section header with clear separator */}
+        <div className="mb-5 p-4 bg-primary-50 border border-primary-100 rounded-xl">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl" aria-hidden="true">📋</span>
+            <div>
+              <h2 id="templates-heading" className="text-lg font-bold text-neutral-900">
+                서울시 표준 양식
+              </h2>
+              <p className="text-sm text-neutral-600 mt-0.5 leading-relaxed">
+                서울특별시 정비사업 운영 매뉴얼에 기반한 표준 양식입니다.{' '}
+                조합별 상황에 맞게 수정하여 사용하세요.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {standardTemplates.map((template) => (
             <TemplateCard key={template.id} template={template} onAction={showToast} />
           ))}

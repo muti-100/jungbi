@@ -55,6 +55,18 @@ const EVENT_TYPE_LABELS: Record<EventType, string> = {
 };
 
 /* ------------------------------------------------------------------ */
+/* Upcoming Schedule                                                     */
+/* ------------------------------------------------------------------ */
+
+const upcomingSchedule: CalendarEvent[] = [
+  { id: 'u1', title: '정기 이사회', date: '2026-04-05', type: 'meeting', dDay: 9 },
+  { id: 'u2', title: '대의원회', date: '2026-04-10', type: 'meeting', dDay: 14 },
+  { id: 'u3', title: '사업시행계획 보완 제출', date: '2026-04-15', type: 'document', dDay: 19 },
+  { id: 'u4', title: '조합원 설명회', date: '2026-04-20', type: 'meeting', dDay: 24 },
+  { id: 'u5', title: '인허가 서류 마감', date: '2026-04-25', type: 'approval', dDay: 29 },
+];
+
+/* ------------------------------------------------------------------ */
 /* Demo Data (2026-03)                                                   */
 /* ------------------------------------------------------------------ */
 
@@ -399,7 +411,7 @@ export default function CalendarPage() {
         {/* Right Sidebar */}
         <aside
           className="w-72 shrink-0 border-l border-neutral-200 bg-white flex flex-col overflow-hidden"
-          aria-label="선택한 날짜의 일정 목록"
+          aria-label="일정 패널"
         >
           <div className="p-4 border-b border-neutral-100">
             <div className="flex items-center gap-2">
@@ -411,21 +423,81 @@ export default function CalendarPage() {
                       day: 'numeric',
                       weekday: 'short',
                     })
-                  : '날짜를 선택하세요'}
+                  : '다가오는 일정'}
               </span>
             </div>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4">
+            {/* Upcoming schedule — shown when no date selected */}
             {!selectedDate && (
-              <div className="text-center py-10 text-sm text-neutral-400">
-                <Calendar size={32} className="mx-auto mb-2 text-neutral-200" strokeWidth={1} />
-                캘린더에서 날짜를 클릭하면
-                <br />
-                해당 일정이 표시됩니다
+              <div className="space-y-2">
+                <p className="text-xs text-neutral-400 mb-3">이후 30일 예정 일정</p>
+                {upcomingSchedule.map((ev) => {
+                  const color = EVENT_COLORS[ev.type];
+                  return (
+                    <button
+                      key={ev.id}
+                      onClick={() => {
+                        setSelectedDate(ev.date);
+                        setSelectedEvent(ev);
+                      }}
+                      className="w-full text-left p-3 rounded-xl border border-neutral-100 hover:border-neutral-200 hover:bg-neutral-50 transition-all"
+                      aria-label={ev.title}
+                    >
+                      <div className="flex items-start gap-2">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full mt-1 shrink-0"
+                          style={{ backgroundColor: color.bg }}
+                          aria-hidden="true"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-1">
+                            <span className="text-sm font-medium text-neutral-800 leading-snug">
+                              {ev.title}
+                            </span>
+                            {ev.dDay !== undefined && <DayBadge dDay={ev.dDay} />}
+                          </div>
+                          <p className="text-xs text-neutral-400 mt-0.5">
+                            {new Date(ev.date).toLocaleDateString('ko-KR', {
+                              month: 'long',
+                              day: 'numeric',
+                              weekday: 'short',
+                            })}
+                          </p>
+                          <div className="mt-1">
+                            <Badge
+                              variant={
+                                ev.type === 'approval'
+                                  ? 'danger'
+                                  : ev.type === 'meeting'
+                                  ? 'primary'
+                                  : ev.type === 'document'
+                                  ? 'warning'
+                                  : ev.type === 'law'
+                                  ? 'info'
+                                  : 'neutral'
+                              }
+                            >
+                              {EVENT_TYPE_LABELS[ev.type]}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+
+                {/* Drag hint */}
+                <div className="mt-4 p-3 bg-neutral-50 border border-neutral-100 rounded-xl">
+                  <p className="text-xs text-neutral-400 leading-relaxed">
+                    일정을 달력에 드래그하여 날짜를 변경할 수 있습니다
+                  </p>
+                </div>
               </div>
             )}
 
+            {/* No events on selected date */}
             {selectedDate && selectedDateEvents.length === 0 && (
               <div className="text-center py-10 text-sm text-neutral-400">
                 <Calendar size={32} className="mx-auto mb-2 text-neutral-200" strokeWidth={1} />
@@ -440,9 +512,16 @@ export default function CalendarPage() {
                   <Plus size={14} />
                   일정 추가
                 </button>
+                <button
+                  onClick={() => setSelectedDate(null)}
+                  className="mt-2 block mx-auto text-xs text-neutral-400 hover:text-neutral-600 underline underline-offset-2 transition-colors"
+                >
+                  전체 일정 보기
+                </button>
               </div>
             )}
 
+            {/* Events on selected date */}
             {selectedDateEvents.length > 0 && (
               <div className="space-y-3">
                 {selectedDateEvents.map((ev) => {
@@ -512,6 +591,12 @@ export default function CalendarPage() {
                     </button>
                   );
                 })}
+                <button
+                  onClick={() => setSelectedDate(null)}
+                  className="text-xs text-neutral-400 hover:text-neutral-600 underline underline-offset-2 transition-colors mt-1"
+                >
+                  전체 일정 보기
+                </button>
               </div>
             )}
           </div>
