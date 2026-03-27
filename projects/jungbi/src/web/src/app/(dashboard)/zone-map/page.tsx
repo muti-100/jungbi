@@ -16,6 +16,7 @@ import {
 import { Badge, type BadgeVariant } from '@/components/ui/Badge'
 import { KpiCard } from '@/components/ui/KpiCard'
 import { cn } from '@/lib/utils'
+import { KakaoMap } from '@/components/map/KakaoMap'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -35,13 +36,8 @@ interface Project {
   unionEstablished: string | null
   constructor: string | null
   status: ProjectStatus
-}
-
-interface District {
-  name: string
-  x: number   // percent from left
-  y: number   // percent from top
-  projects: number
+  lat: number
+  lng: number
 }
 
 type ToastVariant = 'success' | 'neutral' | 'danger'
@@ -52,47 +48,6 @@ interface ToastState {
 }
 
 // ── Static data ────────────────────────────────────────────────────────────────
-
-const seoulDistricts: District[] = [
-  { name: '도봉구', x: 55, y: 5,  projects: 8  },
-  { name: '노원구', x: 70, y: 5,  projects: 12 },
-  { name: '강북구', x: 45, y: 15, projects: 6  },
-  { name: '성북구', x: 55, y: 20, projects: 9  },
-  { name: '중랑구', x: 70, y: 20, projects: 7  },
-  { name: '동대문구', x: 60, y: 30, projects: 11 },
-  { name: '광진구', x: 72, y: 32, projects: 5  },
-  { name: '성동구', x: 58, y: 38, projects: 14 },
-  { name: '종로구', x: 45, y: 28, projects: 4  },
-  { name: '중구',   x: 50, y: 35, projects: 3  },
-  { name: '용산구', x: 45, y: 42, projects: 8  },
-  { name: '강남구', x: 62, y: 55, projects: 18 },
-  { name: '서초구', x: 50, y: 55, projects: 15 },
-  { name: '송파구', x: 75, y: 50, projects: 13 },
-  { name: '강동구', x: 82, y: 40, projects: 10 },
-  { name: '마포구', x: 30, y: 32, projects: 16 },
-  { name: '서대문구', x: 35, y: 25, projects: 7 },
-  { name: '은평구', x: 30, y: 15, projects: 11 },
-  { name: '양천구', x: 18, y: 45, projects: 9  },
-  { name: '강서구', x: 8,  y: 40, projects: 6  },
-  { name: '구로구', x: 20, y: 55, projects: 8  },
-  { name: '금천구', x: 30, y: 60, projects: 5  },
-  { name: '영등포구', x: 30, y: 45, projects: 12 },
-  { name: '동작구', x: 40, y: 52, projects: 7  },
-  { name: '관악구', x: 38, y: 62, projects: 10 },
-]
-
-/** Dominant type per district based on demo data (simplified) */
-const districtDominantType: Record<string, 'redevelop' | 'rebuild' | 'mixed'> = {
-  '강남구': 'rebuild', '서초구': 'rebuild', '송파구': 'rebuild', '강동구': 'rebuild',
-  '용산구': 'redevelop', '마포구': 'redevelop', '성동구': 'redevelop',
-  '동작구': 'redevelop', '관악구': 'redevelop',
-}
-function dominantColor(name: string) {
-  const t = districtDominantType[name]
-  if (t === 'rebuild')   return { bg: 'bg-info-600',    hover: 'hover:bg-info-500',    text: 'text-white' }
-  if (t === 'redevelop') return { bg: 'bg-primary-600', hover: 'hover:bg-primary-500', text: 'text-white' }
-  return                        { bg: 'bg-warning-500', hover: 'hover:bg-warning-400', text: 'text-white' }
-}
 
 const demoProjects: Project[] = [
   {
@@ -107,6 +62,8 @@ const demoProjects: Project[] = [
     unionEstablished: '2019-08-15',
     constructor: '현대건설 컨소시엄',
     status: 'active',
+    lat: 37.5340,
+    lng: 127.0026,
   },
   {
     id: '2',
@@ -120,6 +77,8 @@ const demoProjects: Project[] = [
     unionEstablished: '2015-02-10',
     constructor: 'HDC현대산업개발 컨소시엄',
     status: 'active',
+    lat: 37.5200,
+    lng: 127.1430,
   },
   {
     id: '3',
@@ -133,6 +92,8 @@ const demoProjects: Project[] = [
     unionEstablished: null,
     constructor: null,
     status: 'active',
+    lat: 37.5050,
+    lng: 127.0030,
   },
   {
     id: '4',
@@ -146,6 +107,8 @@ const demoProjects: Project[] = [
     unionEstablished: '2012-04-20',
     constructor: '대림산업',
     status: 'completed',
+    lat: 37.5615,
+    lng: 127.0390,
   },
   {
     id: '5',
@@ -159,6 +122,8 @@ const demoProjects: Project[] = [
     unionEstablished: '2020-01-15',
     constructor: '롯데건설',
     status: 'active',
+    lat: 37.5080,
+    lng: 126.9630,
   },
   {
     id: '6',
@@ -172,6 +137,8 @@ const demoProjects: Project[] = [
     unionEstablished: '2016-09-05',
     constructor: '삼성물산·현대건설',
     status: 'active',
+    lat: 37.4830,
+    lng: 127.0560,
   },
   {
     id: '7',
@@ -185,6 +152,8 @@ const demoProjects: Project[] = [
     unionEstablished: '2023-07-10',
     constructor: null,
     status: 'active',
+    lat: 37.5450,
+    lng: 126.9520,
   },
   {
     id: '8',
@@ -198,47 +167,49 @@ const demoProjects: Project[] = [
     unionEstablished: null,
     constructor: null,
     status: 'preparing',
+    lat: 37.6620,
+    lng: 127.0730,
   },
 ]
 
 // ── Badge helpers ──────────────────────────────────────────────────────────────
 
 const TYPE_BADGE: Record<ProjectType, BadgeVariant> = {
-  '재개발': 'primary',
-  '재건축': 'info',
+  '재개발':    'primary',
+  '재건축':    'info',
   '소규모정비': 'success',
-  '모아주택': 'warning',
+  '모아주택':  'warning',
 }
 
 const STAGE_BADGE: Record<ProjectStage, BadgeVariant> = {
-  '준비위': 'neutral',
-  '추진위': 'warning',
+  '준비위':   'neutral',
+  '추진위':   'warning',
   '조합설립': 'primary',
   '사업시행': 'info',
   '관리처분': 'warning',
-  '착공': 'success',
-  '준공': 'success',
+  '착공':     'success',
+  '준공':     'success',
 }
 
 // ── Filter bar constants ───────────────────────────────────────────────────────
 
 const TYPE_FILTERS: Array<{ label: string; value: ProjectType | '전체' }> = [
-  { label: '전체', value: '전체' },
-  { label: '재개발', value: '재개발' },
-  { label: '재건축', value: '재건축' },
+  { label: '전체',      value: '전체' },
+  { label: '재개발',    value: '재개발' },
+  { label: '재건축',    value: '재건축' },
   { label: '소규모정비', value: '소규모정비' },
-  { label: '모아주택', value: '모아주택' },
+  { label: '모아주택',  value: '모아주택' },
 ]
 
 const STAGE_FILTERS: Array<{ label: string; value: ProjectStage | '전체 단계' }> = [
   { label: '전체 단계', value: '전체 단계' },
-  { label: '준비위', value: '준비위' },
-  { label: '추진위', value: '추진위' },
+  { label: '준비위',   value: '준비위' },
+  { label: '추진위',   value: '추진위' },
   { label: '조합설립', value: '조합설립' },
   { label: '사업시행', value: '사업시행' },
   { label: '관리처분', value: '관리처분' },
-  { label: '착공', value: '착공' },
-  { label: '준공', value: '준공' },
+  { label: '착공',     value: '착공' },
+  { label: '준공',     value: '준공' },
 ]
 
 // ── Toast component ────────────────────────────────────────────────────────────
@@ -340,15 +311,14 @@ function ProjectCard({ project }: { project: Project }) {
 // ── Main page ──────────────────────────────────────────────────────────────────
 
 export default function ZoneMapPage() {
-  const [typeFilter, setTypeFilter] = useState<ProjectType | '전체'>('전체')
-  const [stageFilter, setStageFilter] = useState<ProjectStage | '전체 단계'>('전체 단계')
+  const [typeFilter, setTypeFilter]       = useState<ProjectType | '전체'>('전체')
+  const [stageFilter, setStageFilter]     = useState<ProjectStage | '전체 단계'>('전체 단계')
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null)
-  const [hoveredDistrict, setHoveredDistrict] = useState<string | null>(null)
 
   // Real data refresh state
   const [refreshing, setRefreshing] = useState(false)
-  const [toast, setToast] = useState<ToastState | null>(null)
-  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [toast, setToast]           = useState<ToastState | null>(null)
+  const toastTimerRef               = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const filteredProjects = useMemo(() => {
     return demoProjects.filter((p) => {
@@ -358,10 +328,6 @@ export default function ZoneMapPage() {
       return true
     })
   }, [typeFilter, stageFilter, selectedDistrict])
-
-  function handleDistrictClick(name: string) {
-    setSelectedDistrict((prev) => (prev === name ? null : name))
-  }
 
   function showToast(message: string, variant: ToastVariant) {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
@@ -517,136 +483,46 @@ export default function ZoneMapPage() {
             {/* Legend */}
             <div className="flex flex-wrap gap-3 mb-4 text-xs text-neutral-600">
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-primary-600 inline-block" aria-hidden />
-                재개발 중심
+                <span className="w-3 h-3 rounded-full bg-primary-700 inline-block" aria-hidden />
+                재개발
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-3 rounded-full bg-info-600 inline-block" aria-hidden />
-                재건축 중심
+                재건축
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-warning-500 inline-block" aria-hidden />
-                혼합
+                <span className="w-3 h-3 rounded-full bg-success-600 inline-block" aria-hidden />
+                소규모정비
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-warning-600 inline-block" aria-hidden />
+                모아주택
               </div>
               <div className="flex items-center gap-1.5 ml-auto text-neutral-400">
-                버블 크기 = 사업 건수
+                마커 클릭 시 상세 정보 표시
               </div>
             </div>
 
-            {/* Map container */}
-            <div
-              role="application"
-              aria-label="서울시 구별 정비구역 현황 지도"
-              className="relative w-full bg-gradient-to-br from-neutral-50 to-blue-50/50 rounded-lg border border-neutral-200 overflow-hidden"
-              style={{ height: 520 }}
-            >
-              {/* Background grid lines */}
-              <svg
-                className="absolute inset-0 w-full h-full opacity-20"
-                aria-hidden
-              >
-                <defs>
-                  <pattern id="grid" width="10%" height="10%" patternUnits="userSpaceOnUse" x="0" y="0">
-                    <path d="M 0 0 L 100 0 M 0 0 L 0 100" fill="none" stroke="#94a3b8" strokeWidth="0.5" />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#grid)" />
-              </svg>
-
-              {/* Han River indicator */}
-              <div
-                className="absolute rounded-full bg-blue-200/70 border border-blue-300"
-                style={{ left: '20%', top: '44%', width: '62%', height: '8%', transform: 'rotate(-3deg)' }}
-                aria-label="한강"
-              />
-              <span className="absolute text-[10px] text-blue-500 font-medium" style={{ left: '46%', top: '45%' }}>
-                한강
-              </span>
-
-              {/* District bubbles */}
-              {seoulDistricts.map((d) => {
-                const size = Math.max(28, Math.min(56, 20 + d.projects * 2))
-                const colors = dominantColor(d.name)
-                const isSelected = selectedDistrict === d.name
-                const isHovered = hoveredDistrict === d.name
-
-                return (
-                  <div
-                    key={d.name}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${d.name}: 정비사업 ${d.projects}건`}
-                    aria-pressed={isSelected}
-                    onClick={() => handleDistrictClick(d.name)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        handleDistrictClick(d.name)
-                      }
-                    }}
-                    onMouseEnter={() => setHoveredDistrict(d.name)}
-                    onMouseLeave={() => setHoveredDistrict(null)}
-                    onFocus={() => setHoveredDistrict(d.name)}
-                    onBlur={() => setHoveredDistrict(null)}
-                    className={cn(
-                      'absolute flex items-center justify-center rounded-full cursor-pointer transition-all duration-200',
-                      colors.bg,
-                      colors.hover,
-                      colors.text,
-                      isSelected && 'ring-4 ring-white shadow-lg',
-                      !isSelected && isHovered && 'shadow-md',
-                      !isSelected && !isHovered && 'shadow-sm opacity-90'
-                    )}
-                    style={{
-                      left: `${d.x}%`,
-                      top: `${d.y}%`,
-                      width: size,
-                      height: size,
-                      transform: `translate(-50%, -50%) scale(${isSelected || isHovered ? 1.15 : 1})`,
-                    }}
-                  >
-                    <span className="text-[9px] font-bold leading-tight text-center px-0.5">
-                      {d.projects}
-                    </span>
-
-                    {/* Tooltip */}
-                    {(isHovered || isSelected) && (
-                      <div
-                        className="absolute z-20 bg-neutral-900 text-white text-xs rounded-md px-2.5 py-1.5 whitespace-nowrap pointer-events-none shadow-lg"
-                        style={{ bottom: '110%', left: '50%', transform: 'translateX(-50%)' }}
-                        role="tooltip"
-                      >
-                        <p className="font-semibold">{d.name}</p>
-                        <p className="text-neutral-300">정비사업 {d.projects}건</p>
-                        <div
-                          className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900"
-                          aria-hidden
-                        />
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-
-              {/* District name labels (small, below bubble) */}
-              {seoulDistricts.map((d) => {
-                const labelOffset = Math.max(28, Math.min(56, 20 + d.projects * 2)) / 2 + 6
-                return (
-                  <span
-                    key={d.name + '-label'}
-                    className="absolute text-[9px] text-neutral-600 font-medium text-center pointer-events-none whitespace-nowrap"
-                    style={{
-                      left: `${d.x}%`,
-                      top: `${d.y}%`,
-                      transform: `translate(-50%, ${labelOffset}px)`,
-                    }}
-                    aria-hidden
-                  >
-                    {d.name}
-                  </span>
-                )
-              })}
-            </div>
+            {/* Kakao Map */}
+            <KakaoMap
+              markers={filteredProjects.map((p) => ({
+                id:         p.id,
+                name:       p.name,
+                lat:        p.lat,
+                lng:        p.lng,
+                type:       p.type,
+                stage:      p.stage,
+                district:   p.district,
+                households: p.households,
+                area:       p.area,
+              }))}
+              selectedDistrict={selectedDistrict}
+              onMarkerClick={(id) => {
+                const project = demoProjects.find((p) => p.id === id)
+                if (project) setSelectedDistrict(project.district)
+              }}
+              onDistrictChange={setSelectedDistrict}
+            />
           </div>
         </div>
 
