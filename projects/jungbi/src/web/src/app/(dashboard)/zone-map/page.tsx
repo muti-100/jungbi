@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useCallback } from 'react'
 import {
   MapPin,
   ChevronDown,
@@ -11,6 +11,7 @@ import {
   CalendarDays,
   HardHat,
   Database,
+  RefreshCw,
 } from 'lucide-react'
 import { Badge, type BadgeVariant } from '@/components/ui/Badge'
 import { KpiCard } from '@/components/ui/KpiCard'
@@ -41,6 +42,13 @@ interface District {
   x: number   // percent from left
   y: number   // percent from top
   projects: number
+}
+
+type ToastVariant = 'success' | 'neutral' | 'danger'
+
+interface ToastState {
+  message: string
+  variant: ToastVariant
 }
 
 // ── Static data ────────────────────────────────────────────────────────────────
@@ -233,6 +241,30 @@ const STAGE_FILTERS: Array<{ label: string; value: ProjectStage | '전체 단계
   { label: '준공', value: '준공' },
 ]
 
+// ── Toast component ────────────────────────────────────────────────────────────
+
+const TOAST_STYLES: Record<ToastVariant, string> = {
+  success: 'bg-success-600 text-white',
+  neutral: 'bg-neutral-700 text-white',
+  danger:  'bg-danger-600 text-white',
+}
+
+function Toast({ message, variant }: ToastState) {
+  return (
+    <div
+      role="alert"
+      aria-live="polite"
+      className={cn(
+        'fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium',
+        'transition-all duration-300 max-w-xs',
+        TOAST_STYLES[variant]
+      )}
+    >
+      {message}
+    </div>
+  )
+}
+
 // ── Project card ───────────────────────────────────────────────────────────────
 
 function ProjectCard({ project }: { project: Project }) {
@@ -313,6 +345,11 @@ export default function ZoneMapPage() {
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null)
   const [hoveredDistrict, setHoveredDistrict] = useState<string | null>(null)
 
+  // Real data refresh state
+  const [refreshing, setRefreshing] = useState(false)
+  const [toast, setToast] = useState<ToastState | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const filteredProjects = useMemo(() => {
     return demoProjects.filter((p) => {
       if (typeFilter !== '전체' && p.type !== typeFilter) return false
@@ -326,8 +363,39 @@ export default function ZoneMapPage() {
     setSelectedDistrict((prev) => (prev === name ? null : name))
   }
 
+  function showToast(message: string, variant: ToastVariant) {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    setToast({ message, variant })
+    toastTimerRef.current = setTimeout(() => setToast(null), 2800)
+  }
+
+  const handleRefresh = useCallback(async () => {
+    if (refreshing) return
+    setRefreshing(true)
+
+    try {
+      const res = await fetch('/api/projects/seoul?perPage=100')
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+
+      const data = await res.json() as { data?: unknown[]; totalCount?: number }
+
+      // Log for debugging — real data integration happens in a future sprint
+      console.log('[zone-map] 실제 데이터 로드:', data)
+
+      const count = data.totalCount ?? (Array.isArray(data.data) ? data.data.length : 0)
+      showToast(`${count.toLocaleString()}건의 실제 데이터를 로드했습니다`, 'success')
+    } catch {
+      showToast('API 연결 대기 중 — 데모 데이터를 표시합니다', 'neutral')
+    } finally {
+      setRefreshing(false)
+    }
+  }, [refreshing])
+
   return (
     <main className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 space-y-6">
+      {/* Toast */}
+      {toast && <Toast message={toast.message} variant={toast.variant} />}
+
       {/* Page header */}
       <header>
         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -337,9 +405,32 @@ export default function ZoneMapPage() {
               재개발·재건축·소규모정비 사업 현황을 지도에서 확인하세요
             </p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-neutral-400 bg-neutral-50 border border-neutral-200 rounded-md px-3 py-2">
-            <Database size={12} aria-hidden />
-            출처: 클린업시스템 (cleanup.go.kr), 서울시 정비사업 정보몽땅
+
+          {/* Header right: data source + refresh button */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 text-xs text-neutral-400 bg-neutral-50 border border-neutral-200 rounded-md px-3 py-2">
+              <Database size={12} aria-hidden />
+              출처: 클린업시스템 (cleanup.go.kr), 서울시 정비사업 정보몽땅
+            </div>
+            <button
+              type="button"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              aria-label="실시간 데이터 새로고침"
+              className={cn(
+                'flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium border transition-colors',
+                refreshing
+                  ? 'bg-neutral-100 text-neutral-400 border-neutral-200 cursor-not-allowed'
+                  : 'bg-white text-primary-600 border-primary-200 hover:bg-primary-50 hover:border-primary-400'
+              )}
+            >
+              <RefreshCw
+                size={12}
+                aria-hidden
+                className={cn('transition-transform', refreshing && 'animate-spin')}
+              />
+              실시간 데이터 새로고침
+            </button>
           </div>
         </div>
       </header>

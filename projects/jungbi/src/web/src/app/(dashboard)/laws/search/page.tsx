@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import {
   Search,
   BookOpen,
@@ -10,6 +10,7 @@ import {
   Tag,
   Sparkles,
   X,
+  RefreshCw,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { cn } from '@/lib/utils'
@@ -42,6 +43,13 @@ interface FaqItem {
   answer: string
   lawRefs: LawRef[]
   relatedNews: NewsItem[]
+}
+
+interface LiveNewsItem {
+  title: string
+  description: string
+  link: string
+  pubDate: string
 }
 
 /* ------------------------------------------------------------------ */
@@ -452,6 +460,28 @@ const CATEGORY_BADGE: Record<Category, { variant: 'primary' | 'success' | 'info'
 }
 
 /* ------------------------------------------------------------------ */
+/* Helpers                                                              */
+/* ------------------------------------------------------------------ */
+
+function extractDomain(url: string): string {
+  try {
+    const { hostname } = new URL(url)
+    return hostname.replace(/^www\./, '')
+  } catch {
+    return url
+  }
+}
+
+function formatKoreanDate(pubDate: string): string {
+  try {
+    const d = new Date(pubDate)
+    return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
+  } catch {
+    return pubDate
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Sub-components                                                        */
 /* ------------------------------------------------------------------ */
 
@@ -620,6 +650,119 @@ function FaqCard({ item }: { item: FaqItem }) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Live News Section                                                    */
+/* ------------------------------------------------------------------ */
+
+function LiveNewsSkeletonRow() {
+  return (
+    <div className="flex items-start gap-3 py-3 px-3 animate-pulse" aria-hidden>
+      <div className="w-3.5 h-3.5 rounded bg-neutral-200 shrink-0 mt-0.5" />
+      <div className="flex-1 space-y-1.5">
+        <div className="h-3.5 bg-neutral-200 rounded w-4/5" />
+        <div className="h-3 bg-neutral-100 rounded w-2/5" />
+      </div>
+    </div>
+  )
+}
+
+function LiveNewsSection({
+  items,
+  loading,
+  query,
+}: {
+  items: LiveNewsItem[]
+  loading: boolean
+  query: string
+}) {
+  const searchLabel = query.trim() ? `"${query.trim()}" 관련` : '정비사업'
+
+  return (
+    <section
+      aria-labelledby="live-news-heading"
+      className="bg-white border border-neutral-200 rounded-xl shadow-sm overflow-hidden"
+    >
+      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-neutral-100">
+        <div className="flex items-center gap-2">
+          <Newspaper size={16} className="text-primary-600" aria-hidden />
+          <h2
+            id="live-news-heading"
+            className="text-sm font-semibold text-neutral-800"
+          >
+            실시간 관련 뉴스
+          </h2>
+          <span className="text-xs text-neutral-400 font-medium">
+            {searchLabel} · 네이버 뉴스
+          </span>
+        </div>
+        {loading && (
+          <RefreshCw
+            size={13}
+            className="text-neutral-400 animate-spin"
+            aria-label="뉴스 불러오는 중"
+          />
+        )}
+      </div>
+
+      <div role="feed" aria-label="실시간 뉴스 목록" aria-busy={loading}>
+        {loading ? (
+          <div>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <LiveNewsSkeletonRow key={i} />
+            ))}
+          </div>
+        ) : items.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <Newspaper size={32} className="text-neutral-200 mb-3" strokeWidth={1} aria-hidden />
+            <p className="text-sm text-neutral-500">관련 뉴스를 불러올 수 없습니다</p>
+            <p className="text-xs text-neutral-400 mt-1">API 키 설정을 확인하거나 잠시 후 다시 시도하세요</p>
+          </div>
+        ) : (
+          <div>
+            {items.map((item, idx) => (
+              <a
+                key={idx}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${item.title} (새 탭에서 열기)`}
+                className="flex items-start gap-3 py-3 px-5 hover:bg-neutral-50 transition-colors group border-b border-neutral-50 last:border-b-0"
+              >
+                <Newspaper
+                  size={14}
+                  className="shrink-0 mt-0.5 text-neutral-400 group-hover:text-primary-600 transition-colors"
+                  aria-hidden
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-neutral-800 group-hover:text-primary-700 transition-colors line-clamp-1">
+                    {item.title}
+                  </p>
+                  <p className="text-xs text-neutral-500 mt-0.5 line-clamp-1">
+                    {item.description}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xs font-medium text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">
+                      {extractDomain(item.link)}
+                    </span>
+                    <span className="text-xs text-neutral-400 font-mono">
+                      {formatKoreanDate(item.pubDate)}
+                    </span>
+                  </div>
+                </div>
+                <ExternalLink
+                  size={13}
+                  className="shrink-0 mt-0.5 text-neutral-300 group-hover:text-primary-500 transition-colors"
+                  aria-hidden
+                />
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /* Empty / Loading states                                               */
 /* ------------------------------------------------------------------ */
 
@@ -657,6 +800,11 @@ export default function LawSmartSearchPage() {
   const [query, setQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<FilterCategory>('all')
 
+  // Live news state
+  const [newsItems, setNewsItems] = useState<LiveNewsItem[]>([])
+  const [newsLoading, setNewsLoading] = useState(true)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const handleTagClick = useCallback((tag: string) => {
     setQuery(tag)
     setActiveCategory('all')
@@ -665,6 +813,31 @@ export default function LawSmartSearchPage() {
   const handleClearQuery = useCallback(() => {
     setQuery('')
   }, [])
+
+  // Fetch live news — debounced 600ms when query changes
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    debounceRef.current = setTimeout(() => {
+      const searchQuery = query.trim() ? `${query.trim()} 정비사업` : '재개발 정비사업'
+      setNewsLoading(true)
+
+      fetch(`/api/news?query=${encodeURIComponent(searchQuery)}&display=5&sort=date`)
+        .then((res) => res.json())
+        .then((data: { items?: LiveNewsItem[] }) => {
+          setNewsItems(data.items ?? [])
+          setNewsLoading(false)
+        })
+        .catch(() => {
+          setNewsItems([])
+          setNewsLoading(false)
+        })
+    }, 600)
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [query])
 
   // Fast filter — runs on every keystroke via useMemo
   const filteredItems = useMemo<FaqItem[]>(() => {
@@ -864,6 +1037,15 @@ export default function LawSmartSearchPage() {
             })}
           </div>
         )}
+
+        {/* ── Live news section (always visible at bottom) ── */}
+        <div className="mt-10">
+          <LiveNewsSection
+            items={newsItems}
+            loading={newsLoading}
+            query={query}
+          />
+        </div>
       </div>
     </div>
   )
