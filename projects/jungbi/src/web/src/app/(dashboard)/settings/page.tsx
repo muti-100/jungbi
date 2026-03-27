@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import {
   User,
   Building2,
@@ -12,6 +13,7 @@ import {
   Save,
   Trash2,
   AlertTriangle,
+  FileKey,
   type LucideIcon,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
@@ -368,6 +370,26 @@ function SecurityTab({ onSave }: { onSave: () => void }) {
         <button className="mt-2 w-full px-4 py-2.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors">
           2FA 활성화
         </button>
+      </div>
+
+      {/* Security policy link */}
+      <div className="max-w-md p-4 bg-primary-50 border border-primary-200 rounded-xl">
+        <div className="flex items-start gap-2 mb-3">
+          <FileKey size={16} className="text-primary-600 shrink-0 mt-0.5" strokeWidth={1.5} />
+          <div>
+            <p className="text-sm font-semibold text-primary-800">개인정보 보호 및 보안 정책</p>
+            <p className="text-xs text-primary-600 mt-0.5">
+              데이터 암호화, 접근 제어, 컴플라이언스 등 전체 보안 정책을 확인하세요.
+            </p>
+          </div>
+        </div>
+        <Link
+          href="/settings/security-policy"
+          className="w-full inline-flex items-center justify-between px-4 py-2 rounded-lg border border-primary-300 text-sm font-medium text-primary-700 hover:bg-primary-100 transition-colors"
+        >
+          보안 정책 전문 보기
+          <ChevronRight size={14} aria-hidden />
+        </Link>
       </div>
 
       <div className="max-w-md p-4 bg-danger-50 border border-danger-200 rounded-xl">

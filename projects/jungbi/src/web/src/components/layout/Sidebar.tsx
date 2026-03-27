@@ -17,6 +17,7 @@ import {
   Landmark,
   Receipt,
   MessageCircleQuestion,
+  BookOpenCheck,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -64,6 +65,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: '마감기한 현황', href: '/calendar' },
     ],
   },
+  { label: '총회 관리', icon: BookOpenCheck, href: '/meetings' },
   { label: '사례 검색', icon: FolderSearch, href: '/cases' },
   { label: 'Q&A', icon: MessageCircleQuestion, href: '/qna', badge: 3 },
   { label: '설정', icon: Settings, href: '/settings' },
