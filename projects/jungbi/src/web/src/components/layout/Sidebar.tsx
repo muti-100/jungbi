@@ -18,6 +18,8 @@ import {
   Receipt,
   MessageCircleQuestion,
   BookOpenCheck,
+  HardHat,
+  MapPinned,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -67,6 +69,8 @@ const NAV_ITEMS: NavItem[] = [
   },
   { label: '총회 관리', icon: BookOpenCheck, href: '/meetings' },
   { label: '사례 검색', icon: FolderSearch, href: '/cases' },
+  { label: '시공사 분석', icon: HardHat, href: '/proposals' },
+  { label: '정비구역 지도', icon: MapPinned, href: '/zone-map' },
   { label: 'Q&A', icon: MessageCircleQuestion, href: '/qna', badge: 3 },
   { label: '설정', icon: Settings, href: '/settings' },
 ]
