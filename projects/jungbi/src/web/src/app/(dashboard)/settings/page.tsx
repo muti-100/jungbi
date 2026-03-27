@@ -391,73 +391,31 @@ function BillingTab() {
     <div className="space-y-6">
       <div>
         <h2 className="text-base font-semibold text-neutral-800 mb-4">현재 구독</h2>
-        <div className="max-w-md p-5 bg-primary-50 border border-primary-200 rounded-xl">
+        <div className="max-w-md p-5 bg-success-50 border border-success-200 rounded-xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-bold text-primary-900 text-lg">Pro 플랜</span>
-            <Badge variant="primary">활성</Badge>
+            <span className="font-bold text-success-900 text-lg">무료 오픈 기간</span>
+            <Badge variant="success">활성</Badge>
           </div>
-          <p className="text-sm text-primary-700 mb-3">월 59,000원 · 다음 결제일: 2026-04-26</p>
-          <ul className="space-y-1 text-sm text-primary-700">
-            {['무제한 법령 조회', '실시간 법령 업데이트 알림', '모든 사업 유형 지원', '우선 고객 지원'].map((f) => (
+          <p className="text-sm text-success-700 mb-3">현재 모든 기능이 무료로 제공됩니다</p>
+          <ul className="space-y-1 text-sm text-success-700">
+            {[
+              '무제한 법령 조회',
+              '실시간 법령 업데이트 알림',
+              '모든 사업 유형 절차 플로우차트',
+              '시도별 조례 비교',
+              '일정 관리 및 법정 기한 알림',
+              '조합별 절차 진행 관리',
+            ].map((f) => (
               <li key={f} className="flex items-center gap-2">
-                <Check size={14} className="text-primary-600" />
+                <Check size={14} className="text-success-600" />
                 {f}
               </li>
             ))}
           </ul>
         </div>
-        <div className="flex gap-2 mt-3 max-w-md">
-          <button className="flex-1 px-4 py-2 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors">
-            플랜 변경
-          </button>
-          <button className="flex-1 px-4 py-2 rounded-lg border border-danger-200 text-sm font-medium text-danger-600 hover:bg-danger-50 transition-colors">
-            구독 취소
-          </button>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-sm font-semibold text-neutral-700 mb-3">결제 수단</h3>
-        <div className="max-w-md flex items-center gap-3 px-4 py-3 bg-white border border-neutral-200 rounded-lg">
-          <CreditCard size={20} className="text-neutral-400" strokeWidth={1.5} />
-          <div>
-            <p className="text-sm font-medium text-neutral-800">Visa •••• 4242</p>
-            <p className="text-xs text-neutral-400">만료: 12/28</p>
-          </div>
-          <button className="ml-auto text-xs text-primary-600 hover:underline font-medium">변경</button>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-sm font-semibold text-neutral-700 mb-3">결제 내역</h3>
-        <div className="max-w-2xl">
-          <table className="w-full text-sm" aria-label="결제 내역">
-            <thead>
-              <tr className="border-b border-neutral-200">
-                <th scope="col" className="text-left pb-2 text-xs font-semibold text-neutral-500">날짜</th>
-                <th scope="col" className="text-left pb-2 text-xs font-semibold text-neutral-500">내용</th>
-                <th scope="col" className="text-right pb-2 text-xs font-semibold text-neutral-500">금액</th>
-                <th scope="col" className="text-right pb-2 text-xs font-semibold text-neutral-500">영수증</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { date: '2026-03-26', desc: 'Pro 플랜 월 구독', amount: '59,000원' },
-                { date: '2026-02-26', desc: 'Pro 플랜 월 구독', amount: '59,000원' },
-                { date: '2026-01-26', desc: 'Pro 플랜 월 구독', amount: '59,000원' },
-              ].map((row) => (
-                <tr key={row.date} className="border-b border-neutral-100 hover:bg-neutral-50">
-                  <td className="py-3 text-xs text-neutral-500 font-mono">{row.date}</td>
-                  <td className="py-3 text-neutral-800">{row.desc}</td>
-                  <td className="py-3 text-right font-medium text-neutral-800">{row.amount}</td>
-                  <td className="py-3 text-right">
-                    <button className="text-xs text-primary-600 hover:underline">PDF</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <p className="mt-3 text-xs text-neutral-400 max-w-md">
+          유료 플랜은 추후 안내 예정입니다. 현재는 모든 기능을 무료로 이용하실 수 있습니다.
+        </p>
       </div>
     </div>
   )

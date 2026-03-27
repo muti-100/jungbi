@@ -9,9 +9,12 @@ export const metadata: Metadata = {
   description:
     '재개발·재건축·소규모정비 법령 조회, 절차 관리, 일정 캘린더를 한 곳에서. 조합·전문관리업체·법무법인을 위한 SaaS.',
   keywords: ['도시정비', '재개발', '재건축', '소규모정비', '모아주택', '법령', '조례', '조합'],
+  metadataBase: new URL('https://www.nodrio.com'),
   openGraph: {
     title: '정비나라',
     description: '도시정비사업 통합 관리 플랫폼',
+    url: 'https://www.nodrio.com',
+    siteName: '정비나라',
     locale: 'ko_KR',
     type: 'website',
   },

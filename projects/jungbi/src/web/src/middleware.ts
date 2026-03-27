@@ -1,13 +1,17 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// FREE OPEN MODE: all paths are public during free launch period
+// Toggle FREE_OPEN_MODE to false when payment is ready
+const FREE_OPEN_MODE = true
+
 const PUBLIC_PATHS = ['/', '/login', '/signup', '/api/health']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Allow public paths
-  if (PUBLIC_PATHS.some((p) => pathname === p) || pathname.startsWith('/_next') || pathname.startsWith('/favicon')) {
+  if (FREE_OPEN_MODE || PUBLIC_PATHS.some((p) => pathname === p) || pathname.startsWith('/_next') || pathname.startsWith('/favicon')) {
     return NextResponse.next()
   }
 
