@@ -41,6 +41,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: ScrollText,
     children: [
       { label: '법령 조회', href: '/laws' },
+      { label: '스마트 검색', href: '/laws/search' },
       { label: '법령 업데이트 알림', href: '/laws/alerts' },
     ],
   },
