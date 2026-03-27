@@ -446,8 +446,8 @@ export default function ZoneMapPage() {
             <div
               role="application"
               aria-label="서울시 구별 정비구역 현황 지도"
-              className="relative w-full bg-gradient-to-br from-neutral-50 to-blue-50 rounded-lg border border-neutral-200 overflow-hidden"
-              style={{ paddingBottom: '75%' }}
+              className="relative w-full bg-gradient-to-br from-neutral-50 to-blue-50/50 rounded-lg border border-neutral-200 overflow-hidden"
+              style={{ height: 520 }}
             >
               {/* Background grid lines */}
               <svg
@@ -498,19 +498,20 @@ export default function ZoneMapPage() {
                     onFocus={() => setHoveredDistrict(d.name)}
                     onBlur={() => setHoveredDistrict(null)}
                     className={cn(
-                      'absolute flex items-center justify-center rounded-full cursor-pointer transition-all duration-150',
+                      'absolute flex items-center justify-center rounded-full cursor-pointer transition-all duration-200',
                       colors.bg,
                       colors.hover,
                       colors.text,
-                      isSelected && 'ring-4 ring-white ring-offset-1 scale-110 shadow-lg',
-                      !isSelected && (isHovered ? 'scale-110 shadow-md' : 'shadow-sm')
+                      isSelected && 'ring-4 ring-white shadow-lg',
+                      !isSelected && isHovered && 'shadow-md',
+                      !isSelected && !isHovered && 'shadow-sm opacity-90'
                     )}
                     style={{
                       left: `${d.x}%`,
                       top: `${d.y}%`,
                       width: size,
                       height: size,
-                      transform: `translate(-50%, -50%) ${isSelected || isHovered ? 'scale(1.1)' : ''}`,
+                      transform: `translate(-50%, -50%) scale(${isSelected || isHovered ? 1.15 : 1})`,
                     }}
                   >
                     <span className="text-[9px] font-bold leading-tight text-center px-0.5">
@@ -537,22 +538,23 @@ export default function ZoneMapPage() {
               })}
 
               {/* District name labels (small, below bubble) */}
-              {seoulDistricts.map((d) => (
-                <span
-                  key={d.name + '-label'}
-                  className="absolute text-[8px] text-neutral-500 font-medium text-center pointer-events-none leading-tight"
-                  style={{
-                    left: `${d.x}%`,
-                    top: `${d.y}%`,
-                    transform: 'translate(-50%, 22px)',
-                    width: 52,
-                    marginLeft: -26,
-                  }}
-                  aria-hidden
-                >
-                  {d.name}
-                </span>
-              ))}
+              {seoulDistricts.map((d) => {
+                const labelOffset = Math.max(28, Math.min(56, 20 + d.projects * 2)) / 2 + 6
+                return (
+                  <span
+                    key={d.name + '-label'}
+                    className="absolute text-[9px] text-neutral-600 font-medium text-center pointer-events-none whitespace-nowrap"
+                    style={{
+                      left: `${d.x}%`,
+                      top: `${d.y}%`,
+                      transform: `translate(-50%, ${labelOffset}px)`,
+                    }}
+                    aria-hidden
+                  >
+                    {d.name}
+                  </span>
+                )
+              })}
             </div>
           </div>
         </div>
