@@ -54,6 +54,7 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { label: '절차 플로우차트', href: '/flow' },
       { label: '단계별 진행 현황', href: '/dashboard' },
+      { label: '입찰 공문 발송', href: '/bid-invite' },
     ],
   },
   { label: '조례 비교', icon: BarChart3, href: '/laws/compare' },
