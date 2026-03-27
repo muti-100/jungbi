@@ -103,7 +103,7 @@ export function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) {
     <aside
       aria-label="메인 내비게이션"
       className={cn(
-        'fixed top-16 left-0 bottom-0 z-30 flex flex-col',
+        'h-full flex flex-col',
         'bg-primary-900 transition-all duration-300 ease-in-out',
         collapsed ? 'w-16' : 'w-60'
       )}
