@@ -7,19 +7,14 @@ import {
   LayoutDashboard,
   ScrollText,
   GitBranch,
-  CalendarClock,
-  FolderSearch,
   Settings,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  BarChart3,
   Landmark,
-  Receipt,
   MessageCircleQuestion,
   BookOpenCheck,
   HardHat,
-  MapPinned,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -40,39 +35,39 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { label: '대시보드', icon: LayoutDashboard, href: '/dashboard' },
   {
-    label: '법령 관리',
+    label: '법령/조례',
     icon: ScrollText,
     children: [
       { label: '법령 조회', href: '/laws' },
       { label: '스마트 검색', href: '/laws/search' },
-      { label: '법령 업데이트 알림', href: '/laws/alerts' },
+      { label: '조례 비교', href: '/laws/compare' },
+      { label: '법령 알림', href: '/laws/alerts' },
     ],
   },
   {
-    label: '절차 관리',
+    label: '절차/일정',
     icon: GitBranch,
     children: [
       { label: '절차 플로우차트', href: '/flow' },
-      { label: '단계별 진행 현황', href: '/flow' },
+      { label: '캘린더', href: '/calendar' },
       { label: '입찰 공문 발송', href: '/bid-invite' },
     ],
   },
-  { label: '조례 비교', icon: BarChart3, href: '/laws/compare' },
-  { label: '대출규제', icon: Landmark, href: '/loans' },
-  { label: '세금 가이드', icon: Receipt, href: '/tax' },
   {
-    label: '일정 관리',
-    icon: CalendarClock,
+    label: '부동산 정보',
+    icon: Landmark,
     children: [
-      { label: '캘린더', href: '/calendar' },
-      { label: '법정기한 알림', href: '/laws/alerts' },
+      { label: '대출규제 현황', href: '/loans' },
+      { label: '세금 가이드', href: '/tax' },
+      { label: '정비구역 지도', href: '/zone-map' },
     ],
   },
   { label: '총회 관리', icon: BookOpenCheck, href: '/meetings' },
-  { label: '사례 검색', icon: FolderSearch, href: '/cases' },
   { label: '시공사 분석', icon: HardHat, href: '/proposals' },
-  { label: '정비구역 지도', icon: MapPinned, href: '/zone-map' },
-  { label: 'Q&A', icon: MessageCircleQuestion, href: '/qna', badge: 3 },
+  { label: '사례/Q&A', icon: MessageCircleQuestion, href: '/qna', badge: 3, children: [
+    { label: 'Q&A 게시판', href: '/qna' },
+    { label: '사례 검색', href: '/cases' },
+  ]},
   { label: '설정', icon: Settings, href: '/settings' },
 ]
 
