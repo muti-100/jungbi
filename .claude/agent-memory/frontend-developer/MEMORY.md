@@ -32,9 +32,15 @@
 - `/meetings` — 총회 관리 (booklet library, template downloads, file upload)
 - `/settings/security-policy` — Security & Privacy Policy
 - `/settings` — Settings page (profile, org, notifications, security, billing tabs)
+- `/proposals` — 시공사 제안서 분석 (upload area, sticky-header comparison table, detail cards, AI summary)
+- `/zone-map` — 정비구역 현황 지도 (SVG-free district bubble map, project list, KPI bar)
 
 ## Patterns That Worked
 - Section-per-`<section>` with `aria-labelledby` for accessibility
 - Grid: `grid-cols-1 md:grid-cols-2 xl:grid-cols-3` for responsive templates
 - Expandable column list with `useState` + ChevronDown/Up icons
 - Security notice blocks using `bg-neutral-900` dark card with bullet list
+- Comparison table: sticky left `<th scope="row">` column + best-value highlight with `bg-success-50` + `CheckCircle2`
+- District bubble map: `position: relative` container with `paddingBottom` aspect ratio trick, bubbles as `position: absolute` + `transform: translate(-50%,-50%)`, size from project count
+- Tooltip on hover: absolute child inside bubble with `bottom: 110%`, `pointer-events-none`, CSS arrow via border trick
+- `parseLeadingNumber()` helper to extract numeric value from Korean strings (removes 억원, 평, %, 개월 etc.) for best-value comparison
