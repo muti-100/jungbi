@@ -50,6 +50,7 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { label: '절차 플로우차트', href: '/flow' },
       { label: '캘린더', href: '/calendar' },
+      { label: '필수 서류', href: '/documents' },
       { label: '입찰 공문 발송', href: '/bid-invite' },
     ],
   },
