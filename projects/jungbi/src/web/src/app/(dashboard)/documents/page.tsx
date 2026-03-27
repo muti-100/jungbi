@@ -198,13 +198,13 @@ function DocRow({ doc, index, onDownload }: DocRowProps) {
           ) : (
             <Circle size={14} className="text-neutral-300 shrink-0" aria-hidden />
           )}
-          <span className="font-semibold text-neutral-800 text-sm">{doc.name}</span>
+          <span className="font-semibold text-neutral-800 text-base">{doc.name}</span>
           <FormatBadge format={doc.format} />
         </div>
 
-        <p className="text-xs text-neutral-500 mb-2 leading-relaxed">{doc.description}</p>
+        <p className="text-sm text-neutral-500 mb-2 leading-relaxed">{doc.description}</p>
 
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-500">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-neutral-500">
           <span>
             <span className="text-neutral-400">제출처</span>
             {' '}
@@ -282,7 +282,7 @@ export default function DocumentsPage() {
             <FileText size={22} className="text-primary-600" aria-hidden />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-neutral-900">절차별 필수 서류</h1>
+            <h1 className="text-2xl font-bold text-neutral-900">절차별 필수 서류</h1>
             <p className="text-sm text-neutral-500 mt-0.5">
               정비사업 각 단계에서 필요한 서류를 한눈에 확인하고 표준 양식을 다운로드하세요
             </p>
@@ -310,7 +310,7 @@ export default function DocumentsPage() {
                         aria-pressed={isActive}
                         aria-label={`${stage.name} 단계 선택`}
                         className={cn(
-                          'px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200',
+                          'px-3 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200',
                           isActive
                             ? 'bg-primary-600 text-white shadow-md shadow-primary-200'
                             : isCompleted
@@ -401,8 +401,8 @@ export default function DocumentsPage() {
             <div className="flex items-start gap-3">
               <Info size={18} className="text-info-500 shrink-0 mt-0.5" aria-hidden />
               <div>
-                <h3 className="font-semibold text-info-800 text-sm mb-2">참고사항</h3>
-                <ul className="space-y-1.5 text-xs text-info-700 list-none">
+                <h3 className="font-semibold text-info-800 text-base mb-2">참고사항</h3>
+                <ul className="space-y-1.5 text-sm text-info-700 list-none">
                   <li className="flex items-start gap-2">
                     <span className="w-1 h-1 rounded-full bg-info-400 shrink-0 mt-1.5" aria-hidden />
                     서류 양식은 시·도별 조례에 따라 다를 수 있습니다

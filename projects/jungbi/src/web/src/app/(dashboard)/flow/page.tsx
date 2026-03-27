@@ -79,7 +79,7 @@ function FlowchartNode({ data }: NodeProps<ProcedureNodeData>) {
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
       <Handle type="target" position={Position.Right} style={{ opacity: 0 }} />
       <button
-        className={`w-64 rounded-xl p-3 text-left cursor-pointer transition-all duration-200 hover:shadow-md ${statusStyles[data.status]}`}
+        className={`w-72 rounded-xl p-3 text-left cursor-pointer transition-all duration-200 hover:shadow-md ${statusStyles[data.status]}`}
         onClick={() => data.onNodeClick(data.id)}
         aria-label={`${data.label}, ${data.status === 'completed' ? '완료' : data.status === 'in_progress' ? '진행중' : '대기'}`}
         role="button"
@@ -88,7 +88,7 @@ function FlowchartNode({ data }: NodeProps<ProcedureNodeData>) {
           <div className="flex items-center gap-2">
             <StatusIcon />
             <span
-              className={`font-semibold text-sm ${
+              className={`font-semibold text-base ${
                 data.status === 'in_progress' ? 'text-primary-900' : 'text-neutral-800'
               }`}
             >
@@ -97,10 +97,10 @@ function FlowchartNode({ data }: NodeProps<ProcedureNodeData>) {
           </div>
           {statusBadge[data.status]}
         </div>
-        <div className="text-xs text-neutral-500 space-y-0.5 pl-6">
+        <div className="text-sm text-neutral-500 space-y-0.5 pl-6">
           <div>소관: {data.authority}</div>
           <div>관련법: {data.legalBasis}</div>
-          <div className="font-mono text-neutral-400">{data.date}</div>
+          <div className="font-mono text-sm text-neutral-400">{data.date}</div>
         </div>
         {data.status === 'in_progress' && data.progress !== undefined && (
           <div className="mt-2 pl-6">
@@ -114,7 +114,7 @@ function FlowchartNode({ data }: NodeProps<ProcedureNodeData>) {
                 aria-valuemax={100}
               />
             </div>
-            <span className="text-xs text-primary-600 mt-0.5 block">{data.progress}% 완료</span>
+            <span className="text-sm text-primary-600 mt-0.5 block">{data.progress}% 완료</span>
           </div>
         )}
       </button>
@@ -457,7 +457,7 @@ export default function FlowPage() {
       {/* Header */}
       <div className="bg-white border-b border-neutral-200 px-6 py-4">
         <div className="flex items-center justify-between mb-3">
-          <h1 className="text-xl font-bold text-neutral-950 tracking-tight">절차 플로우차트</h1>
+          <h1 className="text-2xl font-bold text-neutral-950 tracking-tight">절차 플로우차트</h1>
         </div>
         {/* Tabs */}
         <div className="flex gap-1" role="tablist" aria-label="사업 유형 선택">

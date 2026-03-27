@@ -320,7 +320,7 @@ export default function CalendarPage() {
       {/* Header */}
       <div className="bg-white border-b border-neutral-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h1 className="text-xl font-bold text-neutral-950 tracking-tight">일정 관리</h1>
+          <h1 className="text-2xl font-bold text-neutral-950 tracking-tight">일정 관리</h1>
           <div className="flex items-center gap-1">
             <button
               onClick={() => navigateCalendar('prev')}
@@ -416,7 +416,7 @@ export default function CalendarPage() {
           <div className="p-4 border-b border-neutral-100">
             <div className="flex items-center gap-2">
               <Calendar size={16} className="text-neutral-400" strokeWidth={1.5} />
-              <span className="text-sm font-semibold text-neutral-800">
+              <span className="text-base font-semibold text-neutral-800">
                 {selectedDate
                   ? new Date(selectedDate).toLocaleDateString('ko-KR', {
                       month: 'long',
@@ -432,7 +432,7 @@ export default function CalendarPage() {
             {/* Upcoming schedule — shown when no date selected */}
             {!selectedDate && (
               <div className="space-y-2">
-                <p className="text-xs text-neutral-400 mb-3">이후 30일 예정 일정</p>
+                <p className="text-sm text-neutral-400 mb-3">이후 30일 예정 일정</p>
                 {upcomingSchedule.map((ev) => {
                   const color = EVENT_COLORS[ev.type];
                   return (
@@ -453,12 +453,12 @@ export default function CalendarPage() {
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-1">
-                            <span className="text-sm font-medium text-neutral-800 leading-snug">
+                            <span className="text-base font-medium text-neutral-800 leading-snug">
                               {ev.title}
                             </span>
                             {ev.dDay !== undefined && <DayBadge dDay={ev.dDay} />}
                           </div>
-                          <p className="text-xs text-neutral-400 mt-0.5">
+                          <p className="text-sm text-neutral-400 mt-0.5">
                             {new Date(ev.date).toLocaleDateString('ko-KR', {
                               month: 'long',
                               day: 'numeric',
@@ -490,7 +490,7 @@ export default function CalendarPage() {
 
                 {/* Drag hint */}
                 <div className="mt-4 p-3 bg-neutral-50 border border-neutral-100 rounded-xl">
-                  <p className="text-xs text-neutral-400 leading-relaxed">
+                  <p className="text-sm text-neutral-400 leading-relaxed">
                     일정을 달력에 드래그하여 날짜를 변경할 수 있습니다
                   </p>
                 </div>
@@ -547,7 +547,7 @@ export default function CalendarPage() {
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-1">
-                            <span className="text-sm font-medium text-neutral-800 leading-snug">
+                            <span className="text-base font-medium text-neutral-800 leading-snug">
                               {ev.title}
                             </span>
                             {ev.dDay !== undefined && <DayBadge dDay={ev.dDay} />}
@@ -573,7 +573,7 @@ export default function CalendarPage() {
                       </div>
 
                       {isSelected && (
-                        <div className="mt-2 pl-4 space-y-1 text-xs text-neutral-500">
+                        <div className="mt-2 pl-4 space-y-1 text-sm text-neutral-500">
                           {ev.location && (
                             <div className="flex items-center gap-1">
                               <MapPin size={11} strokeWidth={1.5} />

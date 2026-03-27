@@ -221,7 +221,7 @@ function BookletTable({
           placeholder="조합명, 안건으로 검색..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="flex-1 max-w-xs px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="flex-1 max-w-xs px-3 py-2 text-base border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
           aria-label="총회책자 검색"
         />
       </div>
@@ -231,16 +231,16 @@ function BookletTable({
           <table className="w-full min-w-[640px] text-sm" aria-label="총회책자 목록">
             <thead>
               <tr className="border-b border-neutral-100 bg-neutral-50">
-                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 min-w-[180px]">
+                <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500 min-w-[180px]">
                   조합명
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500">
+                <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500">
                   주요 안건
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 w-24">
+                <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500 w-24">
                   유형
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 w-28">
+                <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500 w-28">
                   <button
                     onClick={() => setSortDesc((v) => !v)}
                     className="inline-flex items-center gap-1 hover:text-neutral-700 transition-colors"
@@ -250,10 +250,10 @@ function BookletTable({
                     <ArrowUpDown size={12} aria-hidden />
                   </button>
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 w-20">
+                <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500 w-20">
                   페이지
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500 w-28">
+                <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500 w-28">
                   다운로드
                 </th>
               </tr>
@@ -304,7 +304,7 @@ function BookletTable({
                           <div className="flex flex-col sm:flex-row gap-4">
                             {/* Agenda */}
                             <div className="flex-1">
-                              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">
+                              <p className="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-2">
                                 안건 목록
                               </p>
                               <ul className="space-y-1" aria-label="안건 목록">
@@ -321,7 +321,7 @@ function BookletTable({
 
                             {/* File info */}
                             <div className="sm:w-48 shrink-0">
-                              <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">
+                              <p className="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-2">
                                 파일 정보
                               </p>
                               <div className="space-y-1 text-xs text-neutral-600">
@@ -397,8 +397,8 @@ function TemplateCard({ template, onAction }: { template: Template; onAction: (a
           <IconComponent size={18} aria-hidden />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-neutral-900 text-sm">{template.name}</p>
-          <p className="text-xs text-neutral-500 mt-0.5 leading-snug">{template.description}</p>
+          <p className="font-semibold text-neutral-900 text-base">{template.name}</p>
+          <p className="text-sm text-neutral-500 mt-0.5 leading-snug">{template.description}</p>
         </div>
       </div>
 
@@ -534,7 +534,7 @@ export default function MeetingsPage() {
       {/* Page title */}
       <div>
         <h1 className="text-2xl font-bold text-neutral-950 tracking-tight">총회 관리</h1>
-        <p className="mt-1 text-sm text-neutral-500">총회 관련 서류를 관리하고, 표준 양식을 활용해 명부를 통일된 형식으로 관리하세요.</p>
+        <p className="mt-1 text-base text-neutral-500">총회 관련 서류를 관리하고, 표준 양식을 활용해 명부를 통일된 형식으로 관리하세요.</p>
       </div>
 
       {/* ============================================================ */}
@@ -605,16 +605,16 @@ export default function MeetingsPage() {
 
         {/* Recent uploads table */}
         <div className="mt-6">
-          <h3 className="text-sm font-semibold text-neutral-700 mb-3">최근 업로드</h3>
+          <h3 className="text-base font-semibold text-neutral-700 mb-3">최근 업로드</h3>
           <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
             <table className="w-full text-sm" aria-label="최근 업로드 파일 목록">
               <thead>
                 <tr className="border-b border-neutral-100 bg-neutral-50">
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500">파일명</th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500">양식 유형</th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500">업로드일</th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500">상태</th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-neutral-500">작업</th>
+                  <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500">파일명</th>
+                  <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500">양식 유형</th>
+                  <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500">업로드일</th>
+                  <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500">상태</th>
+                  <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-neutral-500">작업</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100">
@@ -689,7 +689,7 @@ export default function MeetingsPage() {
               '파일 접근 이력은 활동 로그에 기록됩니다',
               '개인정보보호법(PIPA) 및 정보통신망법 준수',
             ].map((notice) => (
-              <li key={notice} className="flex items-start gap-2 text-xs text-neutral-400">
+              <li key={notice} className="flex items-start gap-2 text-sm text-neutral-400">
                 <span className="w-1 h-1 rounded-full bg-neutral-500 mt-1.5 shrink-0" aria-hidden />
                 {notice}
               </li>

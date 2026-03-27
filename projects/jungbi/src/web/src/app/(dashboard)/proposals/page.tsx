@@ -265,8 +265,8 @@ function DetailCard({ proposal }: { proposal: Proposal }) {
         <div className="flex items-center gap-3">
           <span className="text-xl">{MEDALS[proposal.rank - 1]}</span>
           <div className="text-left">
-            <p className="font-semibold text-neutral-800">{proposal.company}</p>
-            <p className="text-xs text-neutral-500">{proposal.brandApt} · 종합 {proposal.score}점</p>
+            <p className="font-semibold text-lg text-neutral-800">{proposal.company}</p>
+            <p className="text-sm text-neutral-500">{proposal.brandApt} · 종합 {proposal.score}점</p>
           </div>
         </div>
         {expanded
@@ -346,7 +346,7 @@ export default function ProposalsPage() {
       {/* Page header */}
       <header>
         <h1 className="text-2xl font-bold text-neutral-800">시공사 제안서 분석</h1>
-        <p className="mt-1 text-sm text-neutral-500">
+        <p className="mt-1 text-base text-neutral-500">
           AI가 복수 시공사 제안서를 항목별로 자동 비교·분석합니다
         </p>
       </header>
@@ -368,7 +368,7 @@ export default function ProposalsPage() {
                   {/* Empty corner cell — sticky */}
                   <th
                     scope="col"
-                    className="sticky left-0 z-20 bg-neutral-50 px-4 py-4 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wide min-w-[140px] border-r border-neutral-200"
+                    className="sticky left-0 z-20 bg-neutral-50 px-4 py-4 text-left text-sm font-semibold text-neutral-500 uppercase tracking-wide min-w-[140px] border-r border-neutral-200"
                   >
                     항목
                   </th>
@@ -382,7 +382,7 @@ export default function ProposalsPage() {
                       <div className="flex flex-col items-center gap-1">
                         <span className="text-xl">{MEDALS[p.rank - 1]}</span>
                         <span className="font-bold text-neutral-800 text-base">{p.company}</span>
-                        <span className="text-xs text-neutral-500">종합 {p.score}점</span>
+                        <span className="text-sm text-neutral-500">종합 {p.score}점</span>
                       </div>
                     </th>
                   ))}
@@ -402,7 +402,7 @@ export default function ProposalsPage() {
                       {/* Row header — sticky with explicit bg */}
                       <th
                         scope="row"
-                        className="sticky left-0 z-10 px-4 py-3.5 text-left text-xs font-semibold text-neutral-600 border-r border-neutral-200 min-w-[140px]"
+                        className="sticky left-0 z-10 px-4 py-3.5 text-left text-sm font-semibold text-neutral-600 border-r border-neutral-200 min-w-[140px]"
                         style={{ backgroundColor: rowBg }}
                       >
                         {row.label}
@@ -469,7 +469,7 @@ export default function ProposalsPage() {
             AI 분석 요약
           </h2>
 
-          <div className="space-y-3 text-sm text-neutral-700 leading-relaxed">
+          <div className="space-y-3 text-base text-neutral-700 leading-relaxed">
             <div className="bg-white/70 rounded-lg p-4">
               <p className="font-semibold text-neutral-800 mb-1">
                 <FileText size={14} className="inline mr-1 text-primary-500" aria-hidden />

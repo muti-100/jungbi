@@ -149,14 +149,14 @@ function ProcedureTimeline({ onItemClick }: { onItemClick: () => void }) {
           >
             <StatusIcon status={stage.status} />
             <span
-              className={`flex-1 text-sm ${
+              className={`flex-1 text-base ${
                 stage.status === 'in_progress' ? 'font-semibold text-neutral-950' : 'text-neutral-700'
               }`}
             >
               {stage.name}
             </span>
             <span
-              className="text-xs text-neutral-400 w-28 text-right shrink-0 font-mono"
+              className="text-sm text-neutral-400 w-28 text-right shrink-0 font-mono"
             >
               {stage.date}
             </span>
@@ -191,13 +191,13 @@ function WeekSchedule({ onItemClick }: { onItemClick: () => void }) {
           >
             <div className="shrink-0 text-center min-w-[36px]">
               <div
-                className={`text-xs font-mono font-semibold ${item.dDay <= 3 ? 'text-danger-600' : 'text-neutral-500'}`}
+                className={`text-sm font-mono font-semibold ${item.dDay <= 3 ? 'text-danger-600' : 'text-neutral-500'}`}
               >
                 {item.date}
               </div>
-              <div className="text-xs text-neutral-400">{item.dayLabel}</div>
+              <div className="text-sm text-neutral-400">{item.dayLabel}</div>
             </div>
-            <p className="flex-1 text-sm text-neutral-800 leading-snug">{item.title}</p>
+            <p className="flex-1 text-base text-neutral-800 leading-snug">{item.title}</p>
             <div className="shrink-0">
               {item.dDay <= 3 ? (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold text-danger-600 bg-danger-100">
@@ -242,9 +242,9 @@ function LawUpdates() {
                 {update.isNew && (
                   <Badge variant="warning">새 글</Badge>
                 )}
-                <span className="text-sm font-medium text-neutral-800 truncate">{update.lawName}</span>
+                <span className="text-base font-medium text-neutral-800 truncate">{update.lawName}</span>
               </div>
-              <p className="text-xs text-neutral-500">{update.summary}</p>
+              <p className="text-sm text-neutral-500">{update.summary}</p>
             </div>
             <span className="text-xs text-neutral-400 shrink-0 font-mono">{update.date}</span>
           </button>
@@ -274,15 +274,15 @@ function SimilarCases() {
           >
             <div className="flex items-start justify-between gap-2 mb-1">
               <div>
-                <span className="text-xs text-neutral-400">{c.region}</span>
-                <h3 className="text-sm font-semibold text-neutral-800">{c.name}</h3>
+                <span className="text-sm text-neutral-400">{c.region}</span>
+                <h3 className="text-base font-semibold text-neutral-800">{c.name}</h3>
               </div>
               <Badge variant="primary">{c.currentStage}</Badge>
             </div>
-            <p className="text-xs text-neutral-500 mb-2">
+            <p className="text-sm text-neutral-500 mb-2">
               진행기간: {c.duration} | 조합원 {c.members}세대
             </p>
-            <p className="text-xs text-primary-600 bg-primary-50 px-2 py-1.5 rounded-md">
+            <p className="text-sm text-primary-600 bg-primary-50 px-2 py-1.5 rounded-md">
               {c.note}
             </p>
           </div>
@@ -304,11 +304,11 @@ export default function DashboardPage() {
       {/* Page Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-950 tracking-tight">대시보드</h1>
+          <h1 className="text-3xl font-bold text-neutral-950 tracking-tight">대시보드</h1>
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-sm text-neutral-500">성동구 XX구역 재개발조합</span>
+            <span className="text-base text-neutral-500">성동구 XX구역 재개발조합</span>
             <Badge variant="primary">재개발</Badge>
-            <span className="text-xs text-neutral-400">정비구역 지정일: 2024-03-15</span>
+            <span className="text-sm text-neutral-400">정비구역 지정일: 2024-03-15</span>
           </div>
         </div>
         <Link

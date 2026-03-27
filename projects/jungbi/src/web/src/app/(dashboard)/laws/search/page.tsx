@@ -503,7 +503,7 @@ function LawRefBlock({ lawRef }: { lawRef: LawRef }) {
           <code className="shrink-0 text-xs font-mono font-semibold text-primary-600 bg-primary-50 px-2 py-0.5 rounded">
             {lawRef.article}
           </code>
-          <span className="text-sm font-medium text-neutral-800 truncate">
+          <span className="text-base font-medium text-neutral-800 truncate">
             {lawRef.law} ({lawRef.title})
           </span>
         </div>
@@ -578,7 +578,7 @@ function FaqCard({ item }: { item: FaqItem }) {
         </div>
         <h2
           id={`faq-title-${item.id}`}
-          className="text-base font-semibold text-neutral-900 leading-snug"
+          className="text-lg font-bold text-neutral-900 leading-snug"
         >
           {item.question}
         </h2>
@@ -588,7 +588,7 @@ function FaqCard({ item }: { item: FaqItem }) {
       <div className="px-5 pb-4">
         <div
           className={cn(
-            'text-sm text-neutral-600 leading-relaxed whitespace-pre-line transition-all duration-200',
+            'text-base text-neutral-600 leading-relaxed whitespace-pre-line transition-all duration-200',
             !answerExpanded && isLong && 'line-clamp-3'
           )}
         >
@@ -686,11 +686,11 @@ function LiveNewsSection({
           <Newspaper size={16} className="text-primary-600" aria-hidden />
           <h2
             id="live-news-heading"
-            className="text-sm font-semibold text-neutral-800"
+            className="text-base font-semibold text-neutral-800"
           >
             실시간 관련 뉴스
           </h2>
-          <span className="text-xs text-neutral-400 font-medium">
+          <span className="text-sm text-neutral-400 font-medium">
             {searchLabel} · 네이버 뉴스
           </span>
         </div>
@@ -733,10 +733,10 @@ function LiveNewsSection({
                   aria-hidden
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-neutral-800 group-hover:text-primary-700 transition-colors line-clamp-1">
+                  <p className="text-base font-medium text-neutral-800 group-hover:text-primary-700 transition-colors line-clamp-1">
                     {item.title}
                   </p>
-                  <p className="text-xs text-neutral-500 mt-0.5 line-clamp-1">
+                  <p className="text-sm text-neutral-500 mt-0.5 line-clamp-1">
                     {item.description}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
@@ -783,8 +783,8 @@ function EmptySearchState({ query }: { query: string }) {
 function CategoryGroupHeader({ label, count }: { label: string; count: number }) {
   return (
     <div className="flex items-center gap-3 mb-4">
-      <span className="text-sm font-bold text-neutral-700">{label}</span>
-      <span className="text-xs text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded-full font-mono">
+      <span className="text-base font-bold text-neutral-700">{label}</span>
+      <span className="text-sm text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded-full font-mono">
         {count}건
       </span>
       <div className="flex-1 h-px bg-neutral-100" />
@@ -895,9 +895,9 @@ export default function LawSmartSearchPage() {
           {/* Title */}
           <div className="flex items-center gap-2 mb-1">
             <Sparkles size={18} className="text-primary-600" aria-hidden />
-            <h1 className="text-xl font-bold text-neutral-900">법령 스마트 검색</h1>
+            <h1 className="text-2xl font-bold text-neutral-900">법령 스마트 검색</h1>
           </div>
-          <p className="text-sm text-neutral-500 mb-5">
+          <p className="text-base text-neutral-500 mb-5">
             궁금한 상황을 입력하시면 관련 법령을 바로 찾아드립니다
           </p>
 
@@ -913,7 +913,7 @@ export default function LawSmartSearchPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="예: 대의원 출마조건이 어떻게 되나요?"
-              className="w-full pl-11 pr-12 py-3.5 text-sm border-2 border-neutral-200 rounded-xl bg-white placeholder-neutral-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-colors"
+              className="w-full pl-11 pr-12 py-3.5 text-base border-2 border-neutral-200 rounded-xl bg-white placeholder-neutral-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-colors"
               aria-label="법령 스마트 검색 입력"
               aria-describedby="search-hint"
             />
@@ -937,7 +937,7 @@ export default function LawSmartSearchPage() {
             <div className="flex items-center gap-1.5 flex-wrap">
               <div className="flex items-center gap-1 mr-1">
                 <Tag size={12} className="text-neutral-400" aria-hidden />
-                <span className="text-xs text-neutral-400 font-medium">인기 검색어</span>
+                <span className="text-sm text-neutral-400 font-medium">인기 검색어</span>
               </div>
               {POPULAR_TAGS.map((tag) => (
                 <button
@@ -945,7 +945,7 @@ export default function LawSmartSearchPage() {
                   type="button"
                   onClick={() => handleTagClick(tag)}
                   className={cn(
-                    'px-3 py-1 rounded-full text-xs font-medium border transition-colors duration-150',
+                    'px-3 py-1 rounded-full text-sm font-medium border transition-colors duration-150',
                     query === tag
                       ? 'bg-primary-600 text-white border-primary-600'
                       : 'bg-white text-neutral-600 border-neutral-200 hover:border-primary-400 hover:text-primary-600'
