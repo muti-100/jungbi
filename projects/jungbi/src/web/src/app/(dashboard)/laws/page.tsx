@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import {
   Search,
   ChevronDown,
@@ -269,7 +269,7 @@ function ArticleBlock({ article, searchTerm }: { article: Article; searchTerm: s
         </code>
         <h3 className="text-sm font-semibold text-neutral-800">({article.title})</h3>
         <button
-          className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded text-neutral-400 hover:text-primary-600"
+          className="ml-auto opacity-40 group-hover:opacity-100 transition-opacity p-1 rounded text-neutral-400 hover:text-primary-600"
           aria-label={`${article.number} 북마크`}
         >
           <Bookmark size={14} strokeWidth={1.5} />
@@ -318,6 +318,41 @@ export default function LawsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [articleSearch, setArticleSearch] = useState('');
   const [hasError] = useState(false);
+  const [starredLaws, setStarredLaws] = useState<Set<string>>(new Set());
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = useCallback((message: string) => {
+    setToast(message);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2800);
+  }, []);
+
+  const toggleStar = () => {
+    setStarredLaws((prev) => {
+      const next = new Set(prev);
+      if (next.has(selectedLawId)) {
+        next.delete(selectedLawId);
+      } else {
+        next.add(selectedLawId);
+        showToast('즐겨찾기 추가됨');
+      }
+      return next;
+    });
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      showToast('링크가 복사되었습니다');
+    } catch {
+      showToast('링크 복사에 실패했습니다');
+    }
+  };
 
   const detail = lawDetails[selectedLawId] ?? null;
 
@@ -345,7 +380,17 @@ export default function LawsPage() {
   }, [detail, articleSearch]);
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full relative">
+      {/* Toast */}
+      {toast && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-neutral-900 text-white text-sm rounded-xl shadow-lg"
+        >
+          {toast}
+        </div>
+      )}
       {/* Left Panel */}
       <aside
         className="w-80 shrink-0 bg-white border-r border-neutral-200 flex flex-col overflow-hidden"
@@ -397,18 +442,30 @@ export default function LawsPage() {
                 <h1 className="text-xl font-bold text-neutral-900">{detail.name}</h1>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
-                    className="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition-colors"
-                    aria-label="즐겨찾기 추가"
+                    onClick={toggleStar}
+                    className={`p-2 rounded-lg transition-colors ${
+                      starredLaws.has(selectedLawId)
+                        ? 'text-warning-500 hover:text-warning-600 hover:bg-warning-50'
+                        : 'text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100'
+                    }`}
+                    aria-label={starredLaws.has(selectedLawId) ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+                    aria-pressed={starredLaws.has(selectedLawId)}
                   >
-                    <Star size={18} strokeWidth={1.5} />
+                    <Star
+                      size={18}
+                      strokeWidth={1.5}
+                      className={starredLaws.has(selectedLawId) ? 'fill-warning-400' : ''}
+                    />
                   </button>
                   <button
+                    onClick={handleShare}
                     className="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition-colors"
                     aria-label="공유"
                   >
                     <Share2 size={18} strokeWidth={1.5} />
                   </button>
                   <button
+                    onClick={handlePrint}
                     className="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition-colors"
                     aria-label="인쇄"
                   >

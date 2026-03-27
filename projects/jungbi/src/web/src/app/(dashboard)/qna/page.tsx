@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useCallback } from 'react'
 import {
   Search,
   Eye,
@@ -540,6 +540,20 @@ export default function QnaPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [answerDraft, setAnswerDraft] = useState('')
+  const [toast, setToast] = useState<string | null>(null)
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const showToast = useCallback((message: string) => {
+    setToast(message)
+    if (toastTimer.current) clearTimeout(toastTimer.current)
+    toastTimer.current = setTimeout(() => setToast(null), 2800)
+  }, [])
+
+  const handleSubmitAnswer = () => {
+    if (!answerDraft.trim()) return
+    setAnswerDraft('')
+    showToast('답변이 등록되었습니다')
+  }
 
   const filteredItems = useMemo(() => {
     return QNA_DATA.filter((item) => {
@@ -556,7 +570,17 @@ export default function QnaPage() {
   const selectedItem = selectedId ? QNA_DATA.find((q) => q.id === selectedId) ?? null : null
 
   return (
-    <div className="flex flex-col h-full bg-neutral-50">
+    <div className="flex flex-col h-full bg-neutral-50 relative">
+      {/* Toast */}
+      {toast && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-neutral-900 text-white text-sm rounded-xl shadow-lg"
+        >
+          {toast}
+        </div>
+      )}
       {/* Header */}
       <header className="bg-white border-b border-neutral-200 px-6 py-5 shrink-0">
         <div className="flex items-start gap-3 mb-5">
@@ -725,6 +749,7 @@ export default function QnaPage() {
                 <div className="flex justify-end mt-2">
                   <button
                     type="button"
+                    onClick={handleSubmitAnswer}
                     disabled={!answerDraft.trim()}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     aria-label="답변 등록"

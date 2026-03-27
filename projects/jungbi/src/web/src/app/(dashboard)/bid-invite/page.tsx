@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Mail,
   Send,
@@ -747,6 +748,7 @@ interface Step3Props {
 type SendStatus = 'idle' | 'sending' | 'done'
 
 function Step3({ selectedCompanies, data, onPrev }: Step3Props) {
+  const router = useRouter()
   const [sendStatus, setSendStatus] = useState<SendStatus>('idle')
   const [results, setResults] = useState<SendResult[]>([])
   const [sendingIdx, setSendingIdx] = useState(-1)
@@ -836,7 +838,7 @@ function Step3({ selectedCompanies, data, onPrev }: Step3Props) {
           </button>
           <button
             type="button"
-            onClick={() => window.location.assign('/dashboard')}
+            onClick={() => router.push('/dashboard')}
             className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm bg-primary-600 text-white hover:bg-primary-700 transition-colors"
           >
             대시보드로 돌아가기

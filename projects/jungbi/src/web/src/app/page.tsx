@@ -33,7 +33,7 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="pt-32 pb-20 px-6 text-center max-w-4xl mx-auto">
-        <span className="inline-flex items-center gap-2 text-xs font-semibold text-primary-600 bg-primary-050 px-3 py-1 rounded-full mb-6">
+        <span className="inline-flex items-center gap-2 text-xs font-semibold text-primary-600 bg-primary-50 px-3 py-1 rounded-full mb-6">
           <Zap size={12} />
           도시정비사업 전용 SaaS 플랫폼
         </span>
@@ -76,7 +76,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {FEATURES.map((f) => (
               <div key={f.title} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 rounded-md bg-primary-050 flex items-center justify-center mb-4">
+                <div className="w-10 h-10 rounded-md bg-primary-50 flex items-center justify-center mb-4">
                   <f.icon size={20} className="text-primary-600" />
                 </div>
                 <h3 className="font-semibold text-neutral-800 mb-2">{f.title}</h3>
@@ -131,7 +131,7 @@ export default function LandingPage() {
                   href="/signup"
                   className={`block text-center py-2.5 rounded-md font-semibold text-sm transition-colors ${
                     plan.highlighted
-                      ? 'bg-white text-primary-900 hover:bg-primary-050'
+                      ? 'bg-white text-primary-900 hover:bg-primary-50'
                       : 'bg-primary-600 text-white hover:bg-primary-700'
                   }`}
                 >

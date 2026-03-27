@@ -248,6 +248,7 @@ function AddEventModal({ defaultDate, onClose }: AddEventModalProps) {
             취소
           </button>
           <button
+            onClick={onClose}
             className="flex-1 px-4 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors"
           >
             추가
@@ -315,6 +316,13 @@ export default function CalendarPage() {
               aria-label="이전 달"
             >
               <ChevronLeft size={18} strokeWidth={1.5} />
+            </button>
+            <button
+              onClick={() => calendarRef.current?.getApi()?.today()}
+              className="px-2.5 py-1 rounded-lg text-xs font-medium text-neutral-600 hover:bg-neutral-100 transition-colors border border-neutral-200"
+              aria-label="오늘로 이동"
+            >
+              오늘
             </button>
             <button
               onClick={() => navigateCalendar('next')}

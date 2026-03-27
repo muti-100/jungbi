@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   BarChart3,
   CalendarClock,
@@ -121,7 +122,7 @@ function StatusBadge({ status, progress }: { status: ProcedureStatus; progress?:
   return <Badge variant="neutral">대기</Badge>;
 }
 
-function ProcedureTimeline() {
+function ProcedureTimeline({ onItemClick }: { onItemClick: () => void }) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
       <div className="flex items-center justify-between mb-5">
@@ -138,6 +139,7 @@ function ProcedureTimeline() {
           <div
             key={stage.id}
             role="listitem"
+            onClick={onItemClick}
             className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors cursor-pointer
               ${stage.status === 'in_progress'
                 ? 'bg-primary-50 border-l-[3px] border-primary-600'
@@ -168,7 +170,7 @@ function ProcedureTimeline() {
   );
 }
 
-function WeekSchedule() {
+function WeekSchedule({ onItemClick }: { onItemClick: () => void }) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6">
       <div className="flex items-center justify-between mb-5">
@@ -184,6 +186,7 @@ function WeekSchedule() {
         {scheduleItems.map((item) => (
           <div
             key={item.id}
+            onClick={onItemClick}
             className="flex items-start gap-3 p-3 rounded-lg hover:bg-neutral-50 transition-colors cursor-pointer"
           >
             <div className="shrink-0 text-center min-w-[36px]">
@@ -294,6 +297,8 @@ function SimilarCases() {
 /* ------------------------------------------------------------------ */
 
 export default function DashboardPage() {
+  const router = useRouter()
+
   return (
     <div>
       {/* Page Header */}
@@ -359,10 +364,10 @@ export default function DashboardPage() {
       {/* Middle row */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
         <div className="lg:col-span-8">
-          <ProcedureTimeline />
+          <ProcedureTimeline onItemClick={() => router.push('/flow')} />
         </div>
         <div className="lg:col-span-4">
-          <WeekSchedule />
+          <WeekSchedule onItemClick={() => router.push('/calendar')} />
         </div>
       </div>
 

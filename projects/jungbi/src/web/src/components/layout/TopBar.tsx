@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Building2, Bell, HelpCircle, ChevronDown, LogOut, Settings, User } from 'lucide-react'
+import { Building2, Bell, HelpCircle, ChevronDown, LogOut, Settings, User, Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export interface TopBarProps {
@@ -11,6 +11,7 @@ export interface TopBarProps {
   unreadNotifications?: number
   userName?: string
   userInitials?: string
+  onMenuToggle?: () => void
 }
 
 export function TopBar({
@@ -19,6 +20,7 @@ export function TopBar({
   unreadNotifications = 0,
   userName = '사용자',
   userInitials = 'U',
+  onMenuToggle,
 }: TopBarProps) {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [orgSelectorOpen, setOrgSelectorOpen] = useState(false)
@@ -28,6 +30,18 @@ export function TopBar({
       role="banner"
       className="fixed top-0 inset-x-0 z-40 h-16 bg-white border-b border-neutral-200 flex items-center px-4 gap-4"
     >
+      {/* Hamburger (mobile only) */}
+      {onMenuToggle && (
+        <button
+          type="button"
+          onClick={onMenuToggle}
+          aria-label="메뉴 열기"
+          className="lg:hidden p-2 rounded-md text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+        >
+          <Menu size={20} />
+        </button>
+      )}
+
       {/* Logo + Service Name */}
       <Link
         href="/dashboard"
@@ -59,7 +73,7 @@ export function TopBar({
             {organizationName}
           </span>
           {organizationProjectType && (
-            <span className="text-xs font-semibold text-primary-600 bg-primary-050 px-1.5 py-0.5 rounded-sm">
+            <span className="text-xs font-semibold text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded-sm">
               {organizationProjectType}
             </span>
           )}
@@ -84,14 +98,14 @@ export function TopBar({
             >
               <span className="font-medium text-neutral-800">{organizationName}</span>
               {organizationProjectType && (
-                <span className="ml-auto text-xs font-semibold text-primary-600 bg-primary-050 px-1.5 py-0.5 rounded-sm">
+                <span className="ml-auto text-xs font-semibold text-primary-600 bg-primary-50 px-1.5 py-0.5 rounded-sm">
                   {organizationProjectType}
                 </span>
               )}
             </button>
             <div className="border-t border-neutral-200 mt-2 pt-2 px-4">
               <Link
-                href="/settings/organization"
+                href="/settings"
                 className="text-sm text-primary-600 hover:underline"
                 onClick={() => setOrgSelectorOpen(false)}
               >
@@ -118,7 +132,7 @@ export function TopBar({
 
         {/* Notifications */}
         <Link
-          href="/alerts"
+          href="/laws/alerts"
           aria-label={`알림 ${unreadNotifications > 0 ? `(읽지 않은 알림 ${unreadNotifications}건)` : ''}`}
           className="relative p-2 rounded-md text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
         >

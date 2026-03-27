@@ -53,7 +53,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: GitBranch,
     children: [
       { label: '절차 플로우차트', href: '/flow' },
-      { label: '단계별 진행 현황', href: '/dashboard' },
+      { label: '단계별 진행 현황', href: '/flow' },
       { label: '입찰 공문 발송', href: '/bid-invite' },
     ],
   },
@@ -65,7 +65,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: CalendarClock,
     children: [
       { label: '캘린더', href: '/calendar' },
-      { label: '마감기한 현황', href: '/calendar' },
+      { label: '법정기한 알림', href: '/laws/alerts' },
     ],
   },
   { label: '총회 관리', icon: BookOpenCheck, href: '/meetings' },
@@ -79,9 +79,10 @@ const NAV_ITEMS: NavItem[] = [
 interface SidebarProps {
   collapsed: boolean
   onToggle: () => void
+  onClose?: () => void
 }
 
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) {
   const pathname = usePathname()
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(() => {
     // Auto-expand group containing current path on mount
@@ -129,6 +130,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                     href={item.href!}
                     title={collapsed ? item.label : undefined}
                     aria-current={isActive ? 'page' : undefined}
+                    onClick={onClose}
                     className={cn(
                       'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors duration-150',
                       'text-white/70 hover:text-white hover:bg-primary-800',
@@ -184,6 +186,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                           <Link
                             href={child.href}
                             aria-current={childActive ? 'page' : undefined}
+                            onClick={onClose}
                             className={cn(
                               'flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors duration-150',
                               'text-white/60 hover:text-white hover:bg-primary-800',

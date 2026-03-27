@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import ReactFlow, {
   Node,
   Edge,
@@ -189,6 +190,7 @@ const defaultDetail: StageDetail = {
 };
 
 function DetailPanel({ stageId, onClose }: { stageId: string; onClose: () => void }) {
+  const router = useRouter()
   const detail = stageDetails[stageId] ?? {
     ...defaultDetail,
     label: nodesData.find((n) => n.id === stageId)?.label ?? '단계 정보',
@@ -309,10 +311,16 @@ function DetailPanel({ stageId, onClose }: { stageId: string; onClose: () => voi
 
       {/* Footer */}
       <div className="p-4 border-t border-neutral-100 flex gap-2">
-        <button className="flex-1 px-3 py-2 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors">
+        <button
+          onClick={() => router.push('/calendar')}
+          className="flex-1 px-3 py-2 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors cursor-pointer"
+        >
           일정 추가
         </button>
-        <button className="flex-1 px-3 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors">
+        <button
+          onClick={() => router.push('/laws')}
+          className="flex-1 px-3 py-2 rounded-lg bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition-colors cursor-pointer"
+        >
           관련 법령 보기
         </button>
       </div>
