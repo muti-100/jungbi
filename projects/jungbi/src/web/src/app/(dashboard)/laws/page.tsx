@@ -224,13 +224,40 @@ function CategorySection({
   );
 }
 
-function ArticleBlock({ article, searchTerm }: { article: Article; searchTerm: string }) {
-  const highlight = (text: string) => {
-    if (!searchTerm) return text;
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
-    return text.replace(regex, '<mark class="bg-warning-200 rounded px-0.5">$1</mark>');
-  };
+/**
+ * Escape special RegExp characters in user-supplied strings to prevent ReDoS.
+ */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
+/**
+ * Splits `text` on matches of `term` and returns React nodes where each match
+ * is wrapped in a <mark> element. Avoids dangerouslySetInnerHTML entirely.
+ */
+function HighlightedText({ text, term }: { text: string; term: string }) {
+  if (!term) return <>{text}</>;
+
+  const safePattern = escapeRegExp(term);
+  const regex = new RegExp(`(${safePattern})`, 'gi');
+  const parts = text.split(regex);
+
+  return (
+    <>
+      {parts.map((part, i) =>
+        regex.test(part) ? (
+          <mark key={i} className="bg-warning-200 rounded px-0.5">
+            {part}
+          </mark>
+        ) : (
+          <React.Fragment key={i}>{part}</React.Fragment>
+        )
+      )}
+    </>
+  );
+}
+
+function ArticleBlock({ article, searchTerm }: { article: Article; searchTerm: string }) {
   return (
     <article className="py-6 group" aria-labelledby={`article-${article.id}`}>
       <div className="flex items-start gap-3 mb-2">
@@ -248,10 +275,9 @@ function ArticleBlock({ article, searchTerm }: { article: Article; searchTerm: s
           <Bookmark size={14} strokeWidth={1.5} />
         </button>
       </div>
-      <div
-        className="text-sm text-neutral-700 leading-relaxed whitespace-pre-line"
-        dangerouslySetInnerHTML={{ __html: highlight(article.content) }}
-      />
+      <div className="text-sm text-neutral-700 leading-relaxed whitespace-pre-line">
+        <HighlightedText text={article.content} term={searchTerm} />
+      </div>
       <div className="mt-4 border-b border-neutral-100" />
     </article>
   );
