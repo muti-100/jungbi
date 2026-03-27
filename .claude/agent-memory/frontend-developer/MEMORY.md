@@ -34,6 +34,7 @@
 - `/settings` — Settings page (profile, org, notifications, security, billing tabs)
 - `/proposals` — 시공사 제안서 분석 (upload area, sticky-header comparison table, detail cards, AI summary)
 - `/zone-map` — 정비구역 현황 지도 (SVG-free district bubble map, project list, KPI bar)
+- `/bid-invite` — 시공사 입찰 공문 발송 (3-step wizard: select companies, edit doc, confirm send)
 
 ## Patterns That Worked
 - Section-per-`<section>` with `aria-labelledby` for accessibility
@@ -44,3 +45,8 @@
 - District bubble map: `position: relative` container with `paddingBottom` aspect ratio trick, bubbles as `position: absolute` + `transform: translate(-50%,-50%)`, size from project count
 - Tooltip on hover: absolute child inside bubble with `bottom: 110%`, `pointer-events-none`, CSS arrow via border trick
 - `parseLeadingNumber()` helper to extract numeric value from Korean strings (removes 억원, 평, %, 개월 etc.) for best-value comparison
+- 3-step wizard: manage `step` as `1 | 2 | 3` literal type with `useState`; pass data forward via `onNext(data)` callback; each step is a separate component
+- Animated send simulation: recursive `sendNext()` with `setTimeout` + spreading partial results via `setResults([...res])` gives real-time progress
+- Official Korean document (공문) preview: HTML `<table>` for meta fields (발신/수신/제목/문서번호), `<pre style="white-space:pre-wrap">` for body text; `fontFamily: 'Malgun Gothic'` for authentic look
+- Template variable insertion at cursor: save `textarea.selectionStart/End`, splice into string, then `setTimeout(() => textarea.setSelectionRange(...), 0)` to restore focus
+- Recipient cycling in preview: `useState(previewIdx)` + prev/next buttons to cycle through selected companies
