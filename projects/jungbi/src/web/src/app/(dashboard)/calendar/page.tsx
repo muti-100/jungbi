@@ -316,7 +316,7 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col" style={{ minHeight: 'calc(100vh - 6rem)' }}>
       {/* Header */}
       <div className="bg-white border-b border-neutral-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
