@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import ReactFlow, {
   Node,
   Edge,
@@ -420,8 +420,8 @@ export default function FlowPage() {
     setSelectedNode((prev) => (prev === id ? null : id));
   }, []);
 
-  const initialNodes = buildNodes(nodesData, handleNodeClick);
-  const initialEdges = buildEdges(nodesData);
+  const initialNodes = useMemo(() => buildNodes(nodesData, handleNodeClick), [handleNodeClick]);
+  const initialEdges = useMemo(() => buildEdges(nodesData), []);
 
   const [nodes] = useNodesState(initialNodes);
   const [edges] = useEdgesState(initialEdges);
