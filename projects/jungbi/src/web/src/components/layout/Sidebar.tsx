@@ -110,8 +110,8 @@ export function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) {
       )}
     >
       {/* Nav items */}
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-2">
-        <ul role="list" className="space-y-px px-2">
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4">
+        <ul role="list" className="space-y-0.5 px-2">
           {NAV_ITEMS.map((item) => {
             const isGroup = Boolean(item.children)
             const isExpanded = expandedGroups.has(item.label)
@@ -128,12 +128,12 @@ export function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) {
                     aria-current={isActive ? 'page' : undefined}
                     onClick={onClose}
                     className={cn(
-                      'flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs transition-colors duration-150',
+                      'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors duration-150',
                       'text-white/70 hover:text-white hover:bg-primary-800',
                       isActive && 'text-white bg-primary-800 border-l-[3px] border-primary-500 pl-[9px]'
                     )}
                   >
-                    <item.icon size={16} className="shrink-0" aria-hidden />
+                    <item.icon size={20} className="shrink-0" aria-hidden />
                     {!collapsed && <span className="truncate">{item.label}</span>}
                     {!collapsed && item.badge != null && item.badge > 0 && (
                       <span className="ml-auto bg-danger-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
@@ -159,7 +159,7 @@ export function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) {
                     isActiveParent && 'text-white'
                   )}
                 >
-                  <item.icon size={16} className="shrink-0" aria-hidden />
+                  <item.icon size={20} className="shrink-0" aria-hidden />
                   {!collapsed && (
                     <>
                       <span className="truncate flex-1 text-left">{item.label}</span>
@@ -174,7 +174,7 @@ export function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) {
 
                 {/* Sub-items */}
                 {!collapsed && isExpanded && (
-                  <ul role="list" className="mt-px space-y-px ml-6">
+                  <ul role="list" className="mt-0.5 space-y-0.5 ml-4">
                     {item.children!.map((child) => {
                       const childActive = pathname === child.href || pathname.startsWith(child.href + '/')
                       return (
@@ -184,12 +184,12 @@ export function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) {
                             aria-current={childActive ? 'page' : undefined}
                             onClick={onClose}
                             className={cn(
-                              'flex items-center gap-1.5 px-2 py-1 rounded text-xs transition-colors duration-150',
-                              'text-white/55 hover:text-white hover:bg-primary-800',
+                              'flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors duration-150',
+                              'text-white/60 hover:text-white hover:bg-primary-800',
                               childActive && 'text-white bg-primary-800 border-l-2 border-primary-500'
                             )}
                           >
-                            <span className="w-1 h-1 rounded-full bg-current shrink-0" aria-hidden />
+                            <span className="w-1.5 h-1.5 rounded-full bg-current shrink-0" aria-hidden />
                             <span className="truncate">{child.label}</span>
                           </Link>
                         </li>
@@ -204,21 +204,21 @@ export function Sidebar({ collapsed, onToggle, onClose }: SidebarProps) {
       </nav>
 
       {/* Collapse toggle */}
-      <div className="px-2 pb-2">
+      <div className="px-2 pb-4">
         <button
           type="button"
           onClick={onToggle}
           aria-label={collapsed ? '사이드바 펼치기' : '사이드바 접기'}
           className={cn(
-            'w-full flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs',
+            'w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm',
             'text-white/50 hover:text-white hover:bg-primary-800 transition-colors duration-150'
           )}
         >
           {collapsed ? (
-            <ChevronRight size={14} aria-hidden />
+            <ChevronRight size={18} aria-hidden />
           ) : (
             <>
-              <ChevronLeft size={14} aria-hidden />
+              <ChevronLeft size={18} aria-hidden />
               <span>접기</span>
             </>
           )}

@@ -76,8 +76,10 @@ function FlowchartNode({ data }: NodeProps<ProcedureNodeData>) {
   return (
     <>
       <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
+      <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
+      <Handle type="target" position={Position.Right} style={{ opacity: 0 }} />
       <button
-        className={`w-72 rounded-xl p-4 text-left cursor-pointer transition-all duration-200 hover:shadow-md ${statusStyles[data.status]}`}
+        className={`w-64 rounded-xl p-3 text-left cursor-pointer transition-all duration-200 hover:shadow-md ${statusStyles[data.status]}`}
         onClick={() => data.onNodeClick(data.id)}
         aria-label={`${data.label}, ${data.status === 'completed' ? '완료' : data.status === 'in_progress' ? '진행중' : '대기'}`}
         role="button"
@@ -117,6 +119,8 @@ function FlowchartNode({ data }: NodeProps<ProcedureNodeData>) {
         )}
       </button>
       <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
+      <Handle type="source" position={Position.Left} style={{ opacity: 0 }} />
+      <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
     </>
   );
 }
@@ -355,24 +359,37 @@ const nodesData: ProcedureItem[] = [
   { id: '10', label: '이전고시 및 청산', authority: '시장·군수', legalBasis: '도시정비법 제86조', date: '미정', status: 'pending' },
 ];
 
-const NODE_X = 200;
-const NODE_Y_START = 20;
-const NODE_Y_GAP = 160;
+// S-shape layout: 5 items per row, alternating left-to-right and right-to-left
+const COLS = 5;
+const COL_WIDTH = 320;
+const ROW_HEIGHT = 180;
+const X_PADDING = 40;
+const Y_PADDING = 30;
 
 function buildNodes(
   items: ProcedureItem[],
   onNodeClick: (id: string) => void
 ): Node<ProcedureNodeData>[] {
-  return items.map((item, index) => ({
-    id: item.id,
-    type: 'procedureNode',
-    position: { x: NODE_X, y: NODE_Y_START + index * NODE_Y_GAP },
-    data: {
-      ...item,
-      onNodeClick,
-    },
-    draggable: false,
-  }));
+  return items.map((item, index) => {
+    const row = Math.floor(index / COLS);
+    const colInRow = index % COLS;
+    const isEvenRow = row % 2 === 0;
+    // Even rows go left→right, odd rows go right→left (S-shape)
+    const col = isEvenRow ? colInRow : (COLS - 1 - colInRow);
+    const x = X_PADDING + col * COL_WIDTH;
+    const y = Y_PADDING + row * ROW_HEIGHT;
+
+    return {
+      id: item.id,
+      type: 'procedureNode',
+      position: { x, y },
+      data: {
+        ...item,
+        onNodeClick,
+      },
+      draggable: false,
+    };
+  });
 }
 
 function buildEdges(items: ProcedureItem[]): Edge[] {
@@ -400,6 +417,7 @@ function buildEdges(items: ProcedureItem[]): Edge[] {
       id: `e${item.id}-${next.id}`,
       source: item.id,
       target: next.id,
+      type: 'smoothstep',
       style: { stroke: strokeColor, strokeWidth, strokeDasharray },
       markerEnd: {
         type: MarkerType.ArrowClosed,
