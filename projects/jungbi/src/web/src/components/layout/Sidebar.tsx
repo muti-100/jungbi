@@ -14,6 +14,9 @@ import {
   ChevronRight,
   ChevronDown,
   BarChart3,
+  Landmark,
+  Receipt,
+  MessageCircleQuestion,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -50,6 +53,8 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { label: '조례 비교', icon: BarChart3, href: '/laws/compare' },
+  { label: '대출규제', icon: Landmark, href: '/loans' },
+  { label: '세금 가이드', icon: Receipt, href: '/tax' },
   {
     label: '일정 관리',
     icon: CalendarClock,
@@ -59,6 +64,7 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { label: '사례 검색', icon: FolderSearch, href: '/cases' },
+  { label: 'Q&A', icon: MessageCircleQuestion, href: '/qna', badge: 3 },
   { label: '설정', icon: Settings, href: '/settings' },
 ]
 
