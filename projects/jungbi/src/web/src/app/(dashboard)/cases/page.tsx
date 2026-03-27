@@ -94,8 +94,8 @@ const casesData: Case[] = [
     memberCount: 240,
     areaM2: 45200,
     floors: 35,
-    insight: '사업시행인가까지 평균 14개월 소요. 관리처분계획인가 진입 후 이주까지 평균 18개월.',
-    tags: ['분양가상한제', '임대주택비율20%'],
+    insight: '문화재 지표조사로 사업시행인가 8개월 지연. 이주비 분쟁은 법원 조정으로 해결. 사업시행인가까지 평균 14개월 소요.',
+    tags: ['문화재조사지연', '이주비분쟁', '분양가상한제'],
   },
   {
     id: '2',
@@ -109,8 +109,8 @@ const casesData: Case[] = [
     memberCount: 185,
     areaM2: 32800,
     floors: 29,
-    insight: '재건축 안전진단 통과 후 정비구역 지정까지 약 30개월. 조합설립동의율 82% 달성.',
-    tags: ['안전진단B등급', '용적률270%'],
+    insight: '안전진단 B등급 판정 후 재심의 없이 통과. 조합설립동의율 82% 달성. 조합장 해임 소송 1건 기각.',
+    tags: ['안전진단B등급', '용적률270%', '조합장해임소송기각'],
   },
   {
     id: '3',
@@ -400,7 +400,7 @@ export default function CasesPage() {
   const [selectedType, setSelectedType] = useState<ProjectType | ''>('')
   const [selectedRegion, setSelectedRegion] = useState('')
   const [selectedStage, setSelectedStage] = useState<ProgressStage | ''>('')
-  const [showFilters, setShowFilters] = useState(false)
+  const [showFilters, setShowFilters] = useState(true)
   const [selectedCase, setSelectedCase] = useState<Case | null>(null)
 
   const activeFilters: { label: string; clear: () => void }[] = []
@@ -428,7 +428,7 @@ export default function CasesPage() {
   }, [searchQuery, selectedType, selectedRegion, selectedStage])
 
   return (
-    <div className="flex h-full">
+    <div className="flex" style={{ minHeight: 'calc(100vh - 6rem)' }}>
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
